@@ -1,24 +1,45 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { Hero } from "@/components/site/Hero";
+import { AboutSection } from "@/components/site/AboutSection";
+import { TrainingGrid } from "@/components/site/TrainingGrid";
+import { ConsultingSection } from "@/components/site/ConsultingSection";
+import { StatsSection } from "@/components/site/StatsSection";
+import { IndustriesSection } from "@/components/site/IndustriesSection";
+import { ProcessSection } from "@/components/site/ProcessSection";
+import { ReferencesSection } from "@/components/site/ReferencesSection";
+import { CTASection } from "@/components/site/CTASection";
+import { ContactForm } from "@/components/site/ContactForm";
 
-// No head() here: the home route inherits title/description/og/twitter from
-// __root.tsx, and ships no og:image so serve-time hosting can inject the
-// project's social preview (explicit og:image or latest screenshot).
 export const Route = createFileRoute("/")({
-  component: Index,
+  head: () => ({
+    meta: [
+      { title: "AT Safety Prive — Formation & Conseil HSE au Maroc" },
+      {
+        name: "description",
+        content:
+          "Cabinet marocain de conseil HSE : formations Santé & Sécurité au Travail, audits, prévention des risques et conformité réglementaire.",
+      },
+      { property: "og:title", content: "AT Safety Prive — Formation & Conseil HSE" },
+      { property: "og:url", content: "/" },
+    ],
+    links: [{ rel: "canonical", href: "/" }],
+  }),
+  component: Home,
 });
 
-// IMPORTANT: Replace this placeholder. See ./README.md for routing conventions.
-function Index() {
+function Home() {
   return (
-    <div
-      className="flex min-h-screen items-center justify-center"
-      style={{ backgroundColor: "#fcfbf8" }}
-    >
-      <img
-        data-lovable-blank-page-placeholder="REMOVE_THIS"
-        src="https://cdn.gpteng.co/blank-app-v1.svg"
-        alt="Your app will live here!"
-      />
-    </div>
+    <>
+      <Hero />
+      <AboutSection />
+      <TrainingGrid />
+      <ConsultingSection />
+      <StatsSection />
+      <IndustriesSection />
+      <ProcessSection />
+      <ReferencesSection />
+      <CTASection />
+      <ContactForm />
+    </>
   );
 }
