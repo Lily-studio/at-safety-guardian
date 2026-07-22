@@ -7,8 +7,8 @@ export function ConsultingSection() {
   const blocks = [
     {
       icon: ClipboardCheck,
-      fr: { t: "Audits de Sécurité", items: ["Évaluation des risques", "Inspections de sécurité", "Audits de conformité"] },
-      en: { t: "Safety Audits", items: ["Risk Assessment", "Safety Inspections", "Compliance Audits"] },
+      fr: { t: "Audits de Sécurité", items: ["Évaluation des risques", "Inspections de sécurité", "Audits de conformité HSE"] },
+      en: { t: "Safety Audits", items: ["Risk Assessment", "Safety Inspections", "HSE Compliance Audits"] },
     },
     {
       icon: ScrollText,

@@ -2,9 +2,8 @@ import { Link } from "@tanstack/react-router";
 import { useI18n } from "@/lib/i18n";
 import { ArrowRight } from "lucide-react";
 import {
-  Flame, HeartPulse, PackageOpen, MoveUp, Zap, FlaskConical, Car, ShieldCheck,
-  AlertTriangle, Layers, Award, Wrench, HardHat, Truck, Users, ClipboardList, Sparkles,
-  ConciergeBell, DoorOpen, Brain, Box, Utensils, GitBranch, Volume2,
+  Flame, HeartPulse, PackageOpen, MoveUp, AlertTriangle, ConciergeBell,
+  Layers, DoorOpen, Award, GitBranch, Brain, Box, Utensils,
 } from "lucide-react";
 
 export type TrainingProgram = {
@@ -24,98 +23,26 @@ export const trainingPrograms: TrainingProgram[] = [
   {
     slug: "secourisme-travail",
     icon: HeartPulse,
-    fr: { title: "Secourisme au Travail (SST)", desc: "SST, RCP, intervention d'urgence, prise en charge des blessés." },
-    en: { title: "First Aid at Work", desc: "First aid, CPR, emergency response, patient care." },
+    fr: { title: "Secourisme au Travail", desc: "Gestes de premiers secours, RCP et intervention d'urgence." },
+    en: { title: "First Aid at Work", desc: "First aid, CPR and emergency response." },
   },
   {
     slug: "manutention-ergonomie",
     icon: PackageOpen,
-    fr: { title: "Manutention & Ergonomie", desc: "Prévention des troubles musculo-squelettiques et gestes sûrs." },
-    en: { title: "Manual Handling & Ergonomics", desc: "Prevention of musculoskeletal disorders and safe postures." },
+    fr: { title: "Manutention Manuelle et Ergonomie", desc: "Prévention des TMS et gestes sûrs." },
+    en: { title: "Manual Handling & Ergonomics", desc: "MSD prevention and safe postures." },
   },
   {
     slug: "travail-en-hauteur",
     icon: MoveUp,
-    fr: { title: "Travail en Hauteur", desc: "Harnais, échafaudages, plateformes mobiles et PEMP." },
-    en: { title: "Working at Height", desc: "Harness, scaffolding, mobile platforms and MEWPs." },
-  },
-  {
-    slug: "habilitation-electrique",
-    icon: Zap,
-    fr: { title: "Habilitation Électrique", desc: "Risques électriques, consignation, procédures LOTO." },
-    en: { title: "Electrical Safety", desc: "Electrical risks, lockout/tagout procedures." },
-  },
-  {
-    slug: "risques-chimiques",
-    icon: FlaskConical,
-    fr: { title: "Risques Chimiques", desc: "Matières dangereuses, fiches de données de sécurité (FDS)." },
-    en: { title: "Chemical Risks", desc: "Hazardous materials, safety data sheets (SDS)." },
+    fr: { title: "Travail en Hauteur", desc: "Harnais, échafaudages, plateformes mobiles." },
+    en: { title: "Working at Height", desc: "Harness, scaffolding, mobile platforms." },
   },
   {
     slug: "atex",
     icon: AlertTriangle,
-    fr: { title: "ATEX — Atmosphères Explosives", desc: "Prévention et intervention en zones ATEX, marquage et EPI adaptés." },
-    en: { title: "ATEX — Explosive Atmospheres", desc: "Prevention and intervention in ATEX zones, marking and suitable PPE." },
-  },
-  {
-    slug: "5s",
-    icon: Layers,
-    fr: { title: "Méthode 5S", desc: "Organisation, propreté et efficacité au poste de travail." },
-    en: { title: "5S Methodology", desc: "Organization, cleanliness and efficiency at the workplace." },
-  },
-  {
-    slug: "iso-45001",
-    icon: Award,
-    fr: { title: "ISO 45001 — SMSST", desc: "Système de management de la santé et sécurité au travail." },
-    en: { title: "ISO 45001 — OH&S", desc: "Occupational health and safety management system." },
-  },
-  {
-    slug: "iso-14001",
-    icon: Sparkles,
-    fr: { title: "ISO 14001 — Environnement", desc: "Système de management environnemental et conformité." },
-    en: { title: "ISO 14001 — Environment", desc: "Environmental management system and compliance." },
-  },
-  {
-    slug: "gestes-postures",
-    icon: Users,
-    fr: { title: "Gestes et Postures", desc: "Techniques de manutention sûres et prévention des TMS." },
-    en: { title: "Postures & Movements", desc: "Safe lifting techniques and MSD prevention." },
-  },
-  {
-    slug: "conduite-engins",
-    icon: Truck,
-    fr: { title: "Conduite d'Engins (CACES)", desc: "Chariots élévateurs, nacelles, engins de chantier." },
-    en: { title: "Equipment Operation (CACES)", desc: "Forklifts, aerial platforms, construction equipment." },
-  },
-  {
-    slug: "epi",
-    icon: HardHat,
-    fr: { title: "Port des EPI", desc: "Choix, utilisation et entretien des équipements de protection individuelle." },
-    en: { title: "PPE Use", desc: "Selection, use and maintenance of personal protective equipment." },
-  },
-  {
-    slug: "document-unique",
-    icon: ClipboardList,
-    fr: { title: "Document Unique (DUERP)", desc: "Évaluation et formalisation des risques professionnels." },
-    en: { title: "Risk Assessment Document", desc: "Evaluation and formalization of occupational risks." },
-  },
-  {
-    slug: "maintenance-securite",
-    icon: Wrench,
-    fr: { title: "Sécurité en Maintenance", desc: "Consignation, permis de travail et co-activité en sécurité." },
-    en: { title: "Maintenance Safety", desc: "Lockout, work permits and safe co-activity." },
-  },
-  {
-    slug: "securite-routiere",
-    icon: Car,
-    fr: { title: "Sécurité Routière", desc: "Conduite défensive et prévention des accidents routiers." },
-    en: { title: "Road Safety", desc: "Defensive driving and road accident prevention." },
-  },
-  {
-    slug: "culture-securite",
-    icon: ShieldCheck,
-    fr: { title: "Culture Sécurité", desc: "Sensibilisation, comportements sûrs et animation HSE." },
-    en: { title: "Safety Culture", desc: "Awareness, safe behaviors and HSE facilitation." },
+    fr: { title: "ATEX", desc: "Prévention et intervention en atmosphères explosives." },
+    en: { title: "ATEX", desc: "Prevention and intervention in explosive atmospheres." },
   },
   {
     slug: "ponts-roulants",
@@ -124,15 +51,33 @@ export const trainingPrograms: TrainingProgram[] = [
     en: { title: "Overhead Cranes", desc: "Safe operation of overhead cranes and slinging." },
   },
   {
+    slug: "5s",
+    icon: Layers,
+    fr: { title: "Méthode 5S", desc: "Organisation, propreté et efficacité au poste de travail." },
+    en: { title: "5S Methodology", desc: "Organization, cleanliness and workplace efficiency." },
+  },
+  {
     slug: "gestion-evacuation",
     icon: DoorOpen,
     fr: { title: "Gestion d'une Évacuation", desc: "Organisation et animation des exercices d'évacuation." },
     en: { title: "Evacuation Management", desc: "Organization of evacuation drills and procedures." },
   },
   {
+    slug: "iso-45001",
+    icon: Award,
+    fr: { title: "Management SST selon la norme ISO 45001", desc: "Système de management de la santé et sécurité au travail." },
+    en: { title: "OH&S Management per ISO 45001", desc: "Occupational health and safety management system." },
+  },
+  {
+    slug: "arbre-des-causes",
+    icon: GitBranch,
+    fr: { title: "Analyse des accidents du travail par la méthode de l'arbre des causes", desc: "Méthodologie d'analyse des accidents du travail." },
+    en: { title: "Accident Analysis — Causes Tree Method", desc: "Workplace accident analysis methodology." },
+  },
+  {
     slug: "rps",
     icon: Brain,
-    fr: { title: "Risques Psychosociaux", desc: "Stress, burn-out, harcèlement et qualité de vie au travail." },
+    fr: { title: "Les Risques Psychosociaux", desc: "Stress, burn-out, harcèlement et qualité de vie au travail." },
     en: { title: "Psychosocial Risks", desc: "Stress, burnout, harassment and workplace wellbeing." },
   },
   {
@@ -146,18 +91,6 @@ export const trainingPrograms: TrainingProgram[] = [
     icon: Utensils,
     fr: { title: "Hygiène Alimentaire HACCP", desc: "Sécurité sanitaire des aliments et méthode HACCP." },
     en: { title: "HACCP Food Hygiene", desc: "Food safety and the HACCP methodology." },
-  },
-  {
-    slug: "arbre-des-causes",
-    icon: GitBranch,
-    fr: { title: "Arbre des Causes", desc: "Analyse des accidents du travail par la méthode de l'arbre des causes." },
-    en: { title: "Root Cause Tree", desc: "Workplace accident analysis using the causes tree method." },
-  },
-  {
-    slug: "bruit-ari",
-    icon: Volume2,
-    fr: { title: "Bruit & Protection Respiratoire", desc: "Exposition au bruit et utilisation de l'ARI." },
-    en: { title: "Noise & Respiratory Protection", desc: "Noise exposure and SCBA use." },
   },
 ];
 
