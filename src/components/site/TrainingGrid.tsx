@@ -4,6 +4,7 @@ import { ArrowRight } from "lucide-react";
 import {
   Flame, HeartPulse, PackageOpen, MoveUp, Zap, FlaskConical, Car, ShieldCheck,
   AlertTriangle, Layers, Award, Wrench, HardHat, Truck, Users, ClipboardList, Sparkles,
+  Crane, DoorOpen, Brain, Box, Utensils, GitBranch,
 } from "lucide-react";
 
 export type TrainingProgram = {
