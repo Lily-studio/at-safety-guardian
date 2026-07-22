@@ -4,7 +4,7 @@ import { ArrowRight } from "lucide-react";
 import {
   Flame, HeartPulse, PackageOpen, MoveUp, Zap, FlaskConical, Car, ShieldCheck,
   AlertTriangle, Layers, Award, Wrench, HardHat, Truck, Users, ClipboardList, Sparkles,
-  Crane, DoorOpen, Brain, Box, Utensils, GitBranch,
+  ConciergeBell, DoorOpen, Brain, Box, Utensils, GitBranch, Volume2,
 } from "lucide-react";
 
 export type TrainingProgram = {
@@ -116,6 +116,47 @@ export const trainingPrograms: TrainingProgram[] = [
     icon: ShieldCheck,
     fr: { title: "Culture Sécurité", desc: "Sensibilisation, comportements sûrs et animation HSE." },
     en: { title: "Safety Culture", desc: "Awareness, safe behaviors and HSE facilitation." },
+  {
+    slug: "ponts-roulants",
+    icon: ConciergeBell,
+    fr: { title: "Ponts Roulants", desc: "Conduite en sécurité des ponts roulants et élingage." },
+    en: { title: "Overhead Cranes", desc: "Safe operation of overhead cranes and slinging." },
+  },
+  {
+    slug: "gestion-evacuation",
+    icon: DoorOpen,
+    fr: { title: "Gestion d'une Évacuation", desc: "Organisation et animation des exercices d'évacuation." },
+    en: { title: "Evacuation Management", desc: "Organization of evacuation drills and procedures." },
+  },
+  {
+    slug: "rps",
+    icon: Brain,
+    fr: { title: "Risques Psychosociaux", desc: "Stress, burn-out, harcèlement et qualité de vie au travail." },
+    en: { title: "Psychosocial Risks", desc: "Stress, burnout, harassment and workplace wellbeing." },
+  },
+  {
+    slug: "espace-confine",
+    icon: Box,
+    fr: { title: "Travail en Espace Confiné", desc: "Prévention, permis de travail et procédures de sauvetage." },
+    en: { title: "Confined Space Work", desc: "Prevention, work permits and rescue procedures." },
+  },
+  {
+    slug: "haccp",
+    icon: Utensils,
+    fr: { title: "Hygiène Alimentaire HACCP", desc: "Sécurité sanitaire des aliments et méthode HACCP." },
+    en: { title: "HACCP Food Hygiene", desc: "Food safety and the HACCP methodology." },
+  },
+  {
+    slug: "arbre-des-causes",
+    icon: GitBranch,
+    fr: { title: "Arbre des Causes", desc: "Analyse des accidents du travail par la méthode de l'arbre des causes." },
+    en: { title: "Root Cause Tree", desc: "Workplace accident analysis using the causes tree method." },
+  },
+  {
+    slug: "bruit-ari",
+    icon: Volume2,
+    fr: { title: "Bruit & Protection Respiratoire", desc: "Exposition au bruit et utilisation de l'ARI." },
+    en: { title: "Noise & Respiratory Protection", desc: "Noise exposure and SCBA use." },
   },
 ];
 
