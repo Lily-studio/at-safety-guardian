@@ -81,7 +81,7 @@ function TrainingDetail() {
 
               <FicheBlock icon={BookOpen} title="Programme">
                 <ul className="space-y-3">
-                  {fiche.programme.map((step) => (
+                  {fiche.programme.map((step: string) => (
                     <li key={step} className="flex items-start gap-3">
                       <CheckCircle2 size={20} className="text-accent shrink-0 mt-0.5" />
                       <span className="text-foreground">{step}</span>
