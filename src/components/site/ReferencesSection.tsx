@@ -48,7 +48,7 @@ const logos = [
   { name: "Cosumar", src: assetUrl(cosumarLogo) },
   { name: "Lesieur Cristal", src: assetUrl(lesieurLogo) },
   { name: "Renault", src: assetUrl(renaultLogo) },
-  { name: "Marjane", src: assetUrl(marjaneLogo) },
+  
   { name: "Alliances", src: assetUrl(alliancesLogo), dark: true },
   { name: "Lafarge", src: assetUrl(lafargeLogo) },
   { name: "Holcim", src: assetUrl(holcimLogo) },
