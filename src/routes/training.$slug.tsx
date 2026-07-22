@@ -1,8 +1,11 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
-import { ArrowLeft, CheckCircle2, Clock, Users, Award, Target, BookOpen, GraduationCap, ClipboardCheck, Printer } from "lucide-react";
+import { ArrowLeft, CheckCircle2, Clock, Users, Award, Target, BookOpen, GraduationCap, ClipboardCheck, Printer, Download } from "lucide-react";
 import { trainingPrograms } from "@/components/site/TrainingGrid";
 import { getFiche } from "@/lib/fiches";
 import { CTASection } from "@/components/site/CTASection";
+import technicalSheetPdf from "@/assets/fiche_technique_ATSAFETY.pdf.asset.json";
+
+const technicalSheetPdfUrl = (technicalSheetPdf as { url: string }).url;
 
 export const Route = createFileRoute("/training/$slug")({
   loader: ({ params }) => {
@@ -115,6 +118,13 @@ function TrainingDetail() {
                 >
                   <Printer size={14} /> Imprimer la fiche
                 </button>
+                <a
+                  href={technicalSheetPdfUrl}
+                  download
+                  className="mt-3 w-full inline-flex items-center justify-center gap-2 text-sm text-muted-foreground hover:text-primary"
+                >
+                  <Download size={14} /> Télécharger le PDF fourni
+                </a>
               </div>
             </aside>
           </div>
