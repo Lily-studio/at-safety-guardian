@@ -31,10 +31,10 @@ const dict: Record<Lang, Dict> = {
     "about.p1":
       "AT SAFETY PRIVE est un cabinet marocain de conseil spécialisé en Santé et Sécurité au Travail.",
     "about.p2":
-      "Créé par des experts issus de la Protection Civile, de l'ingénierie HSE et de la Médecine du Travail, notre mission est d'aider les entreprises à prévenir les accidents du travail, protéger leurs collaborateurs et construire une véritable culture sécurité.",
+      "Fondé en 2010, notre cabinet réunit des experts issus de la Protection Civile, de l'ingénierie HSE et de la Médecine du Travail. Notre mission : aider les entreprises à prévenir les accidents du travail, protéger leurs collaborateurs et bâtir une véritable culture sécurité.",
     "about.support": "Nous accompagnons les organisations à travers :",
     "about.value1.t": "Prévention",
-    "about.value1.d": "Anticiper les risques avant qu'ils ne deviennent des accidents.",
+    "about.value1.d": "Identifier, évaluer et maîtriser les risques pour éviter les accidents avant qu'ils ne surviennent.",
     "about.value2.t": "Professionnalisme",
     "about.value2.d": "Une exigence de qualité à chaque étape de notre accompagnement.",
     "about.value3.t": "Expertise Terrain",
@@ -69,8 +69,8 @@ const dict: Record<Lang, Dict> = {
     "process.s3.d": "Une offre adaptée à votre contexte.",
     "process.s4.t": "Formation / Audit",
     "process.s4.d": "Déploiement opérationnel par nos experts.",
-    "process.s5.t": "Certification & Suivi",
-    "process.s5.d": "Attestations et accompagnement continu.",
+    "process.s5.t": "Suivi et amélioration",
+    "process.s5.d": "Retour d'expérience, indicateurs et accompagnement continu.",
 
     "references.title": "Nos Références",
     "references.subtitle":
@@ -136,10 +136,10 @@ const dict: Record<Lang, Dict> = {
     "about.p1":
       "AT SAFETY PRIVE is a Moroccan consulting firm specialized in Occupational Health and Safety.",
     "about.p2":
-      "Created by experts from Civil Protection, HSE Engineering and Occupational Medicine, our mission is to help companies prevent workplace accidents, protect employees and build a strong safety culture.",
+      "Founded in 2010, our firm brings together experts from Civil Protection, HSE Engineering and Occupational Medicine. Our mission: help companies prevent workplace accidents, protect employees and build a strong safety culture.",
     "about.support": "We support organizations through:",
     "about.value1.t": "Prevention",
-    "about.value1.d": "Anticipate risks before they turn into accidents.",
+    "about.value1.d": "Identify, assess and control risks to prevent accidents before they happen.",
     "about.value2.t": "Professionalism",
     "about.value2.d": "A commitment to quality at every step.",
     "about.value3.t": "Field Expertise",
@@ -174,8 +174,8 @@ const dict: Record<Lang, Dict> = {
     "process.s3.d": "An offer tailored to your context.",
     "process.s4.t": "Training / Audit",
     "process.s4.d": "Operational delivery by our experts.",
-    "process.s5.t": "Certification & Follow-up",
-    "process.s5.d": "Certificates and ongoing support.",
+    "process.s5.t": "Follow-up & Improvement",
+    "process.s5.d": "Feedback loop, KPIs and ongoing support.",
 
     "references.title": "Client References",
     "references.subtitle":
