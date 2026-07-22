@@ -116,6 +116,7 @@ export const trainingPrograms: TrainingProgram[] = [
     icon: ShieldCheck,
     fr: { title: "Culture Sécurité", desc: "Sensibilisation, comportements sûrs et animation HSE." },
     en: { title: "Safety Culture", desc: "Awareness, safe behaviors and HSE facilitation." },
+  },
   {
     slug: "ponts-roulants",
     icon: ConciergeBell,
