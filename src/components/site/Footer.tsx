@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { Facebook, Linkedin, Mail, MapPin, Phone } from "lucide-react";
-import logo from "@/assets/logo.png";
+import logoAsset from "@/assets/logo.png.asset.json";
 import { useI18n } from "@/lib/i18n";
 
 export function Footer() {
@@ -10,7 +10,7 @@ export function Footer() {
     <footer className="bg-primary text-primary-foreground pt-16 pb-8 mt-0">
       <div className="container-x grid gap-10 md:grid-cols-2 lg:grid-cols-4">
         <div>
-          <img src={logo} alt="AT Safety Prive" className="h-14 w-auto bg-white rounded-md p-1" width={512} height={512} />
+          <img src={logoAsset.url} alt="AT Safety Prive" className="h-14 w-auto bg-white rounded-md p-1" width={512} height={512} />
           <p className="mt-4 text-sm text-white/70 leading-relaxed">{t("footer.tagline")}</p>
           <div className="flex gap-3 mt-5">
             <a href="#" aria-label="LinkedIn" className="p-2 rounded-md bg-white/10 hover:bg-accent transition-colors">

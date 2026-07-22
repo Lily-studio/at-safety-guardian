@@ -1,7 +1,7 @@
 import { Link } from "@tanstack/react-router";
-import { Menu, X, Phone } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import { useEffect, useState } from "react";
-import logo from "@/assets/logo.png";
+import logoAsset from "@/assets/logo.png.asset.json";
 import { useI18n, type Lang } from "@/lib/i18n";
 
 export function Header() {
@@ -33,7 +33,7 @@ export function Header() {
     >
       <div className="container-x flex items-center justify-between h-18 py-3">
         <Link to="/" className="flex items-center gap-2 shrink-0" aria-label="AT Safety Prive - Accueil">
-          <img src={logo} alt="AT Safety Prive" className="h-11 w-auto" width={512} height={512} />
+          <img src={logoAsset.url} alt="AT Safety Prive" className="h-12 w-auto" width={512} height={512} />
         </Link>
 
         <nav className="hidden lg:flex items-center gap-1" aria-label="Primary">
