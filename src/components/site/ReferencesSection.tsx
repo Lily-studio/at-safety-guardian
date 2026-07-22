@@ -35,7 +35,7 @@ import pgLogo from "@/assets/references/procter-gamble.svg.asset.json";
 import unileverLogo from "@/assets/references/unilever.svg.asset.json";
 
 type AssetPointer = { url: string };
-const assetUrl = (asset: AssetPointer) => asset.url;
+const assetUrl = (asset: unknown) => (asset as AssetPointer).url;
 
 const logos = [
   { name: "REDAL", src: assetUrl(redalLogo) },
