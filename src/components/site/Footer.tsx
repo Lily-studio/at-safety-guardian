@@ -48,8 +48,8 @@ export function Footer() {
           <h3 className="text-sm font-semibold uppercase tracking-wider mb-4">{t("footer.contactCol")}</h3>
           <ul className="space-y-3 text-sm text-white/80">
             <li className="flex items-start gap-2"><MapPin size={16} className="mt-0.5 shrink-0 text-accent" /> Casablanca, Maroc</li>
-            <li className="flex items-start gap-2"><Phone size={16} className="mt-0.5 shrink-0 text-accent" /> +212 5XX XX XX XX</li>
-            <li className="flex items-start gap-2"><Mail size={16} className="mt-0.5 shrink-0 text-accent" /> contact@atsafetyprive.ma</li>
+            <li className="flex items-start gap-2"><Phone size={16} className="mt-0.5 shrink-0 text-accent" /> +212 666 249 070</li>
+            <li className="flex items-start gap-2"><Mail size={16} className="mt-0.5 shrink-0 text-accent" /> atsafetyprive@gmail.com</li>
           </ul>
         </div>
       </div>

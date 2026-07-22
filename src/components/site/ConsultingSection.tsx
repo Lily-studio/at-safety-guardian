@@ -12,8 +12,8 @@ export function ConsultingSection() {
     },
     {
       icon: ScrollText,
-      fr: { t: "Conformité Réglementaire", items: ["Réglementations SST", "Procédures de sécurité", "Documentation"] },
-      en: { t: "Regulatory Compliance", items: ["Occupational Safety Regulations", "Safety Procedures", "Documentation"] },
+      fr: { t: "Conformité Réglementaire", items: ["Réglementations SST", "Procédures de sécurité", "Document Unique (DUERP)", "Audits de conformité"] },
+      en: { t: "Regulatory Compliance", items: ["Occupational Safety Regulations", "Safety Procedures", "Risk Assessment Document", "Compliance Audits"] },
     },
     {
       icon: Settings2,

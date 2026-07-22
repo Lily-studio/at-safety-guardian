@@ -48,8 +48,8 @@ export function ContactForm() {
           </div>
           <ul className="space-y-4">
             {[
-              { icon: Phone, label: t("contact.info.phone"), value: "+212 5XX XX XX XX" },
-              { icon: Mail, label: t("contact.info.email"), value: "contact@atsafetyprive.ma" },
+              { icon: Phone, label: t("contact.info.phone"), value: "+212 666 249 070" },
+              { icon: Mail, label: t("contact.info.email"), value: "atsafetyprive@gmail.com" },
               { icon: MapPin, label: t("contact.info.location"), value: t("contact.info.locationVal") },
             ].map((it, i) => {
               const Icon = it.icon;
