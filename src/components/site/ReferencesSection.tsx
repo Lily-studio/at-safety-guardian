@@ -1,28 +1,90 @@
 import { useI18n } from "@/lib/i18n";
 import { SectionHeader } from "./TrainingGrid";
+import redalLogo from "@/assets/references/redal.webp.asset.json";
+import safranLogo from "@/assets/references/safran.svg.asset.json";
+import danoneLogo from "@/assets/references/danone.png.asset.json";
+import cocaColaLogo from "@/assets/references/coca-cola.svg.asset.json";
+import ocpLogo from "@/assets/references/ocp-group.png.asset.json";
+import oncfLogo from "@/assets/references/oncf.png.asset.json";
+import managemLogo from "@/assets/references/managem.png.asset.json";
+import cosumarLogo from "@/assets/references/cosumar.png.asset.json";
+import lesieurLogo from "@/assets/references/lesieur-cristal.jpg.asset.json";
+import renaultLogo from "@/assets/references/renault.svg.asset.json";
+import marjaneLogo from "@/assets/references/marjane.png.asset.json";
+import alliancesLogo from "@/assets/references/alliances.png.asset.json";
+import lafargeLogo from "@/assets/references/lafargeholcim-maroc.svg.asset.json";
+import holcimLogo from "@/assets/references/holcim.svg.asset.json";
+import nestleLogo from "@/assets/references/nestle.svg.asset.json";
+import centraleDanoneLogo from "@/assets/references/centrale-danone.png.asset.json";
+import marocTelecomLogo from "@/assets/references/maroc-telecom.svg.asset.json";
+import oneeLogo from "@/assets/references/onee.png.asset.json";
+import attijariLogo from "@/assets/references/attijariwafa-bank.png.asset.json";
+import bmceLogo from "@/assets/references/bmce-bank.png.asset.json";
+import ramLogo from "@/assets/references/royal-air-maroc.svg.asset.json";
+import ctmLogo from "@/assets/references/ctm.png.asset.json";
+import marsaLogo from "@/assets/references/marsa-maroc.png.asset.json";
+import somacaLogo from "@/assets/references/somaca.svg.asset.json";
+import peugeotLogo from "@/assets/references/peugeot-maroc.svg.asset.json";
+import yazakiLogo from "@/assets/references/yazaki.svg.asset.json";
+import delphiLogo from "@/assets/references/delphi.svg.asset.json";
+import bombardierLogo from "@/assets/references/bombardier.svg.asset.json";
+import stLogo from "@/assets/references/stmicroelectronics.svg.asset.json";
+import alstomLogo from "@/assets/references/alstom.svg.asset.json";
+import colgateLogo from "@/assets/references/colgate-palmolive.svg.asset.json";
+import pgLogo from "@/assets/references/procter-gamble.svg.asset.json";
+import unileverLogo from "@/assets/references/unilever.svg.asset.json";
 
 const logos = [
-  "REDAL", "Safran", "Danone", "Coca-Cola", "OCP Group", "ONCF", "Managem", "Cosumar",
-  "Lesieur Cristal", "Renault", "Marjane", "Alliances", "Lafarge", "Holcim", "Nestlé",
-  "Centrale Danone", "Maroc Telecom", "ONEE", "Attijariwafa Bank", "BMCE Bank",
-  "Royal Air Maroc", "CTM", "Marsa Maroc", "Somaca", "Peugeot Maroc", "Yazaki",
-  "Delphi", "Bombardier", "STMicroelectronics", "Alstom", "Colgate-Palmolive",
-  "Procter & Gamble", "Unilever",
+  { name: "REDAL", src: redalLogo.url },
+  { name: "Safran", src: safranLogo.url },
+  { name: "Danone", src: danoneLogo.url },
+  { name: "Coca-Cola", src: cocaColaLogo.url },
+  { name: "OCP Group", src: ocpLogo.url },
+  { name: "ONCF", src: oncfLogo.url },
+  { name: "Managem", src: managemLogo.url },
+  { name: "Cosumar", src: cosumarLogo.url },
+  { name: "Lesieur Cristal", src: lesieurLogo.url },
+  { name: "Renault", src: renaultLogo.url },
+  { name: "Marjane", src: marjaneLogo.url },
+  { name: "Alliances", src: alliancesLogo.url, dark: true },
+  { name: "Lafarge", src: lafargeLogo.url },
+  { name: "Holcim", src: holcimLogo.url },
+  { name: "Nestlé", src: nestleLogo.url },
+  { name: "Centrale Danone", src: centraleDanoneLogo.url },
+  { name: "Maroc Telecom", src: marocTelecomLogo.url },
+  { name: "ONEE", src: oneeLogo.url },
+  { name: "Attijariwafa Bank", src: attijariLogo.url },
+  { name: "BMCE Bank", src: bmceLogo.url },
+  { name: "Royal Air Maroc", src: ramLogo.url },
+  { name: "CTM", src: ctmLogo.url },
+  { name: "Marsa Maroc", src: marsaLogo.url },
+  { name: "Somaca", src: somacaLogo.url },
+  { name: "Peugeot Maroc", src: peugeotLogo.url },
+  { name: "Yazaki", src: yazakiLogo.url },
+  { name: "Delphi", src: delphiLogo.url },
+  { name: "Bombardier", src: bombardierLogo.url },
+  { name: "STMicroelectronics", src: stLogo.url },
+  { name: "Alstom", src: alstomLogo.url },
+  { name: "Colgate-Palmolive", src: colgateLogo.url },
+  { name: "Procter & Gamble", src: pgLogo.url },
+  { name: "Unilever", src: unileverLogo.url },
 ];
 
-function Row({ items, duration, reverse = false }: { items: string[]; duration: number; reverse?: boolean }) {
+type LogoItem = (typeof logos)[number];
+
+function Row({ items, duration, reverse = false }: { items: LogoItem[]; duration: number; reverse?: boolean }) {
   return (
     <div className="group relative overflow-hidden py-2">
       <div
         className="flex gap-6 w-max animate-[marquee_var(--d)_linear_infinite] group-hover:[animation-play-state:paused]"
         style={{ ["--d" as string]: `${duration}s`, animationDirection: reverse ? "reverse" : "normal" }}
       >
-        {[...items, ...items].map((n, i) => (
+        {[...items, ...items].map((logo, i) => (
           <div
-            key={`${n}-${i}`}
-            className="shrink-0 h-20 min-w-[180px] px-6 flex items-center justify-center rounded-lg bg-surface border border-border text-center text-sm font-bold text-primary/70 hover:text-accent hover:border-accent/40 transition-colors"
+            key={`${logo.name}-${i}`}
+            className={`shrink-0 h-20 min-w-[180px] px-6 flex items-center justify-center rounded-lg border border-border transition-colors hover:border-accent/40 ${logo.dark ? "bg-primary" : "bg-surface"}`}
           >
-            {n}
+            <img src={logo.src} alt={`Logo ${logo.name}`} loading="lazy" className="max-h-12 max-w-[140px] object-contain" />
           </div>
         ))}
       </div>
