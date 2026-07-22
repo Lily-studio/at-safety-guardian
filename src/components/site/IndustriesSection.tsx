@@ -1,4 +1,4 @@
-import { HardHat, Truck, UtensilsCrossed, Factory, Warehouse, Stethoscope, Zap, Building2 } from "lucide-react";
+import { HardHat, Truck, UtensilsCrossed, Factory, Stethoscope, Zap, Building2 } from "lucide-react";
 import { useI18n } from "@/lib/i18n";
 import { SectionHeader } from "./TrainingGrid";
 
@@ -8,7 +8,6 @@ const industries = [
   { icon: Building2, fr: "Hôtellerie", en: "Hospitality" },
   { icon: UtensilsCrossed, fr: "Agroalimentaire", en: "Food Industry" },
   { icon: Factory, fr: "Industrie manufacturière", en: "Manufacturing" },
-  { icon: Warehouse, fr: "Entrepôts", en: "Warehouses" },
   { icon: Stethoscope, fr: "Santé", en: "Healthcare" },
   { icon: Zap, fr: "Énergie", en: "Energy" },
 ];

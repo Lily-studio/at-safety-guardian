@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { Facebook, Linkedin, Mail, MapPin, Phone } from "lucide-react";
-import logo from "@/assets/logo.png";
+import logoAsset from "@/assets/logo.png.asset.json";
 import { useI18n } from "@/lib/i18n";
 
 export function Footer() {
@@ -10,7 +10,7 @@ export function Footer() {
     <footer className="bg-primary text-primary-foreground pt-16 pb-8 mt-0">
       <div className="container-x grid gap-10 md:grid-cols-2 lg:grid-cols-4">
         <div>
-          <img src={logo} alt="AT Safety Prive" className="h-14 w-auto bg-white rounded-md p-1" width={512} height={512} />
+          <img src={logoAsset.url} alt="AT Safety Prive" className="h-14 w-auto bg-white rounded-md p-1" width={512} height={512} />
           <p className="mt-4 text-sm text-white/70 leading-relaxed">{t("footer.tagline")}</p>
           <div className="flex gap-3 mt-5">
             <a href="#" aria-label="LinkedIn" className="p-2 rounded-md bg-white/10 hover:bg-accent transition-colors">
@@ -48,8 +48,8 @@ export function Footer() {
           <h3 className="text-sm font-semibold uppercase tracking-wider mb-4">{t("footer.contactCol")}</h3>
           <ul className="space-y-3 text-sm text-white/80">
             <li className="flex items-start gap-2"><MapPin size={16} className="mt-0.5 shrink-0 text-accent" /> Casablanca, Maroc</li>
-            <li className="flex items-start gap-2"><Phone size={16} className="mt-0.5 shrink-0 text-accent" /> +212 5XX XX XX XX</li>
-            <li className="flex items-start gap-2"><Mail size={16} className="mt-0.5 shrink-0 text-accent" /> contact@atsafetyprive.ma</li>
+            <li className="flex items-start gap-2"><Phone size={16} className="mt-0.5 shrink-0 text-accent" /> +212 666 249 070</li>
+            <li className="flex items-start gap-2"><Mail size={16} className="mt-0.5 shrink-0 text-accent" /> atsafetyprive@gmail.com</li>
           </ul>
         </div>
       </div>
