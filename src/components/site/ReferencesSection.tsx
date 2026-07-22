@@ -10,7 +10,7 @@ import managemLogo from "@/assets/references/managem.png.asset.json";
 import cosumarLogo from "@/assets/references/cosumar.png.asset.json";
 import lesieurLogo from "@/assets/references/lesieur-cristal.jpg.asset.json";
 import renaultLogo from "@/assets/references/renault.svg.asset.json";
-import marjaneLogo from "@/assets/references/marjane.png.asset.json";
+
 import alliancesLogo from "@/assets/references/alliances.png.asset.json";
 import lafargeLogo from "@/assets/references/lafargeholcim-maroc.svg.asset.json";
 import holcimLogo from "@/assets/references/holcim.svg.asset.json";
@@ -48,7 +48,7 @@ const logos = [
   { name: "Cosumar", src: assetUrl(cosumarLogo) },
   { name: "Lesieur Cristal", src: assetUrl(lesieurLogo) },
   { name: "Renault", src: assetUrl(renaultLogo) },
-  { name: "Marjane", src: assetUrl(marjaneLogo) },
+  
   { name: "Alliances", src: assetUrl(alliancesLogo), dark: true },
   { name: "Lafarge", src: assetUrl(lafargeLogo) },
   { name: "Holcim", src: assetUrl(holcimLogo) },
