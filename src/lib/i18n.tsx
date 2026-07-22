@@ -19,7 +19,7 @@ const dict: Record<Lang, Dict> = {
     "hero.title2": "Conseil",
     "hero.title3": "Audits HSE",
     "hero.subtitle":
-      "AT SAFETY PRIVE est un cabinet marocain de conseil spécialisé en Santé et Sécurité au Travail, prévention des risques, conformité réglementaire HSE.",
+      "AT SAFETY PRIVE est un cabinet marocain de conseil spécialisé en Santé et Sécurité au Travail, prévention des risques, conformité réglementaire HSE et veille légale.",
     "hero.cta1": "Découvrir nos formations",
     "hero.cta2": "Demander un devis",
     "hero.cta3": "Nous contacter",
