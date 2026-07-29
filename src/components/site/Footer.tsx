@@ -26,7 +26,7 @@ export function Footer() {
           <h3 className="text-sm font-semibold uppercase tracking-wider mb-4">{t("footer.quick")}</h3>
           <ul className="space-y-2 text-sm text-white/75">
             <li><Link to="/about" className="hover:text-accent">{t("nav.about")}</Link></li>
-            <li><Link to="/training" className="hover:text-accent">{t("nav.training")}</Link></li>
+            <li><Link to="/formations" className="hover:text-accent">{t("nav.training")}</Link></li>
             <li><Link to="/consulting" className="hover:text-accent">{t("nav.consulting")}</Link></li>
             <li><Link to="/references" className="hover:text-accent">{t("nav.references")}</Link></li>
             <li><Link to="/contact" className="hover:text-accent">{t("nav.contact")}</Link></li>

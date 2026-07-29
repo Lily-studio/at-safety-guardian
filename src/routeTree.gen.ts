@@ -14,11 +14,14 @@ import { Route as TermsRouteImport } from './routes/terms'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as ReferencesRouteImport } from './routes/references'
 import { Route as PrivacyRouteImport } from './routes/privacy'
+import { Route as FormationsRouteImport } from './routes/formations'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as ConsultingRouteImport } from './routes/consulting'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as FormationsIndexRouteImport } from './routes/formations.index'
 import { Route as TrainingSlugRouteImport } from './routes/training.$slug'
+import { Route as FormationsSlugRouteImport } from './routes/formations.$slug'
 
 const TrainingRoute = TrainingRouteImport.update({
   id: '/training',
@@ -45,6 +48,11 @@ const PrivacyRoute = PrivacyRouteImport.update({
   path: '/privacy',
   getParentRoute: () => rootRouteImport,
 } as any)
+const FormationsRoute = FormationsRouteImport.update({
+  id: '/formations',
+  path: '/formations',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ContactRoute = ContactRouteImport.update({
   id: '/contact',
   path: '/contact',
@@ -65,10 +73,20 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const FormationsIndexRoute = FormationsIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => FormationsRoute,
+} as any)
 const TrainingSlugRoute = TrainingSlugRouteImport.update({
   id: '/$slug',
   path: '/$slug',
   getParentRoute: () => TrainingRoute,
+} as any)
+const FormationsSlugRoute = FormationsSlugRouteImport.update({
+  id: '/$slug',
+  path: '/$slug',
+  getParentRoute: () => FormationsRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
@@ -76,12 +94,15 @@ export interface FileRoutesByFullPath {
   '/about': typeof AboutRoute
   '/consulting': typeof ConsultingRoute
   '/contact': typeof ContactRoute
+  '/formations': typeof FormationsRouteWithChildren
   '/privacy': typeof PrivacyRoute
   '/references': typeof ReferencesRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/terms': typeof TermsRoute
   '/training': typeof TrainingRouteWithChildren
+  '/formations/$slug': typeof FormationsSlugRoute
   '/training/$slug': typeof TrainingSlugRoute
+  '/formations/': typeof FormationsIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -93,7 +114,9 @@ export interface FileRoutesByTo {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/terms': typeof TermsRoute
   '/training': typeof TrainingRouteWithChildren
+  '/formations/$slug': typeof FormationsSlugRoute
   '/training/$slug': typeof TrainingSlugRoute
+  '/formations': typeof FormationsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -101,12 +124,15 @@ export interface FileRoutesById {
   '/about': typeof AboutRoute
   '/consulting': typeof ConsultingRoute
   '/contact': typeof ContactRoute
+  '/formations': typeof FormationsRouteWithChildren
   '/privacy': typeof PrivacyRoute
   '/references': typeof ReferencesRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/terms': typeof TermsRoute
   '/training': typeof TrainingRouteWithChildren
+  '/formations/$slug': typeof FormationsSlugRoute
   '/training/$slug': typeof TrainingSlugRoute
+  '/formations/': typeof FormationsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -115,12 +141,15 @@ export interface FileRouteTypes {
     | '/about'
     | '/consulting'
     | '/contact'
+    | '/formations'
     | '/privacy'
     | '/references'
     | '/sitemap.xml'
     | '/terms'
     | '/training'
+    | '/formations/$slug'
     | '/training/$slug'
+    | '/formations/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -132,19 +161,24 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/terms'
     | '/training'
+    | '/formations/$slug'
     | '/training/$slug'
+    | '/formations'
   id:
     | '__root__'
     | '/'
     | '/about'
     | '/consulting'
     | '/contact'
+    | '/formations'
     | '/privacy'
     | '/references'
     | '/sitemap.xml'
     | '/terms'
     | '/training'
+    | '/formations/$slug'
     | '/training/$slug'
+    | '/formations/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -152,6 +186,7 @@ export interface RootRouteChildren {
   AboutRoute: typeof AboutRoute
   ConsultingRoute: typeof ConsultingRoute
   ContactRoute: typeof ContactRoute
+  FormationsRoute: typeof FormationsRouteWithChildren
   PrivacyRoute: typeof PrivacyRoute
   ReferencesRoute: typeof ReferencesRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
@@ -196,6 +231,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PrivacyRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/formations': {
+      id: '/formations'
+      path: '/formations'
+      fullPath: '/formations'
+      preLoaderRoute: typeof FormationsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/contact': {
       id: '/contact'
       path: '/contact'
@@ -224,6 +266,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/formations/': {
+      id: '/formations/'
+      path: '/'
+      fullPath: '/formations/'
+      preLoaderRoute: typeof FormationsIndexRouteImport
+      parentRoute: typeof FormationsRoute
+    }
     '/training/$slug': {
       id: '/training/$slug'
       path: '/$slug'
@@ -231,8 +280,29 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TrainingSlugRouteImport
       parentRoute: typeof TrainingRoute
     }
+    '/formations/$slug': {
+      id: '/formations/$slug'
+      path: '/$slug'
+      fullPath: '/formations/$slug'
+      preLoaderRoute: typeof FormationsSlugRouteImport
+      parentRoute: typeof FormationsRoute
+    }
   }
 }
+
+interface FormationsRouteChildren {
+  FormationsSlugRoute: typeof FormationsSlugRoute
+  FormationsIndexRoute: typeof FormationsIndexRoute
+}
+
+const FormationsRouteChildren: FormationsRouteChildren = {
+  FormationsSlugRoute: FormationsSlugRoute,
+  FormationsIndexRoute: FormationsIndexRoute,
+}
+
+const FormationsRouteWithChildren = FormationsRoute._addFileChildren(
+  FormationsRouteChildren,
+)
 
 interface TrainingRouteChildren {
   TrainingSlugRoute: typeof TrainingSlugRoute
@@ -251,6 +321,7 @@ const rootRouteChildren: RootRouteChildren = {
   AboutRoute: AboutRoute,
   ConsultingRoute: ConsultingRoute,
   ContactRoute: ContactRoute,
+  FormationsRoute: FormationsRouteWithChildren,
   PrivacyRoute: PrivacyRoute,
   ReferencesRoute: ReferencesRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,

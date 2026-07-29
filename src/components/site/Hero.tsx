@@ -32,7 +32,7 @@ export function Hero() {
             {t("hero.subtitle")}
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
-            <Link to="/training" className="btn-accent">
+            <Link to="/formations" className="btn-accent">
               <GraduationCap size={18} /> {t("hero.cta1")}
             </Link>
             <Link to="/contact" className="btn-primary-outline text-white">

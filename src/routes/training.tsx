@@ -1,9 +1,9 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { TrainingGrid } from "@/components/site/TrainingGrid";
-import { CTASection } from "@/components/site/CTASection";
-import { PageHero } from "@/components/site/PageHero";
+import { createFileRoute, redirect } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/training")({
+  beforeLoad: () => {
+    throw redirect({ to: "/formations" });
+  },
   head: () => ({
     meta: [
       { title: "Formations HSE — AT Safety Prive" },
@@ -23,15 +23,5 @@ export const Route = createFileRoute("/training")({
       }),
     }],
   }),
-  component: TrainingPage,
+  component: () => null,
 });
-
-function TrainingPage() {
-  return (
-    <>
-      <PageHero titleKey="training.title" subtitleKey="training.subtitle" eyebrow="03" />
-      <TrainingGrid />
-      <CTASection />
-    </>
-  );
-}
