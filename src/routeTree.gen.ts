@@ -19,6 +19,7 @@ import { Route as ContactRouteImport } from './routes/contact'
 import { Route as ConsultingRouteImport } from './routes/consulting'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as FormationsIndexRouteImport } from './routes/formations.index'
 import { Route as TrainingSlugRouteImport } from './routes/training.$slug'
 import { Route as FormationsSlugRouteImport } from './routes/formations.$slug'
 
@@ -72,6 +73,11 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const FormationsIndexRoute = FormationsIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => FormationsRoute,
+} as any)
 const TrainingSlugRoute = TrainingSlugRouteImport.update({
   id: '/$slug',
   path: '/$slug',
@@ -96,13 +102,13 @@ export interface FileRoutesByFullPath {
   '/training': typeof TrainingRouteWithChildren
   '/formations/$slug': typeof FormationsSlugRoute
   '/training/$slug': typeof TrainingSlugRoute
+  '/formations/': typeof FormationsIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/consulting': typeof ConsultingRoute
   '/contact': typeof ContactRoute
-  '/formations': typeof FormationsRouteWithChildren
   '/privacy': typeof PrivacyRoute
   '/references': typeof ReferencesRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
@@ -110,6 +116,7 @@ export interface FileRoutesByTo {
   '/training': typeof TrainingRouteWithChildren
   '/formations/$slug': typeof FormationsSlugRoute
   '/training/$slug': typeof TrainingSlugRoute
+  '/formations': typeof FormationsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -125,6 +132,7 @@ export interface FileRoutesById {
   '/training': typeof TrainingRouteWithChildren
   '/formations/$slug': typeof FormationsSlugRoute
   '/training/$slug': typeof TrainingSlugRoute
+  '/formations/': typeof FormationsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -141,13 +149,13 @@ export interface FileRouteTypes {
     | '/training'
     | '/formations/$slug'
     | '/training/$slug'
+    | '/formations/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/about'
     | '/consulting'
     | '/contact'
-    | '/formations'
     | '/privacy'
     | '/references'
     | '/sitemap.xml'
@@ -155,6 +163,7 @@ export interface FileRouteTypes {
     | '/training'
     | '/formations/$slug'
     | '/training/$slug'
+    | '/formations'
   id:
     | '__root__'
     | '/'
@@ -169,6 +178,7 @@ export interface FileRouteTypes {
     | '/training'
     | '/formations/$slug'
     | '/training/$slug'
+    | '/formations/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -256,6 +266,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/formations/': {
+      id: '/formations/'
+      path: '/'
+      fullPath: '/formations/'
+      preLoaderRoute: typeof FormationsIndexRouteImport
+      parentRoute: typeof FormationsRoute
+    }
     '/training/$slug': {
       id: '/training/$slug'
       path: '/$slug'
@@ -275,10 +292,12 @@ declare module '@tanstack/react-router' {
 
 interface FormationsRouteChildren {
   FormationsSlugRoute: typeof FormationsSlugRoute
+  FormationsIndexRoute: typeof FormationsIndexRoute
 }
 
 const FormationsRouteChildren: FormationsRouteChildren = {
   FormationsSlugRoute: FormationsSlugRoute,
+  FormationsIndexRoute: FormationsIndexRoute,
 }
 
 const FormationsRouteWithChildren = FormationsRoute._addFileChildren(
@@ -312,3 +331,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
