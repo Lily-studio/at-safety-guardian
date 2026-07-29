@@ -89,8 +89,7 @@ export function TrainingGrid() {
                 <div className="inline-flex items-center justify-center w-12 h-12 rounded-lg bg-accent/10 text-accent group-hover:bg-accent group-hover:text-white transition-colors">
                   <Icon size={24} />
                 </div>
-                <h3 className="mt-5 text-lg font-semibold text-primary">{c.title}</h3>
-                <p className="mt-2 text-sm text-muted-foreground leading-relaxed flex-1">{c.desc}</p>
+                <h3 className="mt-5 text-lg font-semibold text-primary flex-1">{c.title}</h3>
                 <span className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-accent">
                   {t("training.learn")} <ArrowRight size={14} className="group-hover:translate-x-0.5 transition-transform" />
                 </span>
