@@ -2,8 +2,7 @@ import { Link } from "@tanstack/react-router";
 import { useI18n } from "@/lib/i18n";
 import { ArrowRight } from "lucide-react";
 import {
-  Flame, HeartPulse, PackageOpen, MoveUp, AlertTriangle, ConciergeBell,
-  Layers, DoorOpen, Award, GitBranch, Brain, Box, Utensils,
+  Flame, HeartPulse, PackageOpen, MoveUp, Box, Brain, Utensils, GitBranch, Volume2,
 } from "lucide-react";
 
 export type TrainingProgram = {
@@ -39,58 +38,34 @@ export const trainingPrograms: TrainingProgram[] = [
     en: { title: "Working at Height", desc: "Harness, scaffolding, mobile platforms." },
   },
   {
-    slug: "atex",
-    icon: AlertTriangle,
-    fr: { title: "ATEX", desc: "Prévention et intervention en atmosphères explosives." },
-    en: { title: "ATEX", desc: "Prevention and intervention in explosive atmospheres." },
-  },
-  {
-    slug: "ponts-roulants",
-    icon: ConciergeBell,
-    fr: { title: "Ponts Roulants", desc: "Conduite en sécurité des ponts roulants et élingage." },
-    en: { title: "Overhead Cranes", desc: "Safe operation of overhead cranes and slinging." },
-  },
-  {
-    slug: "5s",
-    icon: Layers,
-    fr: { title: "Méthode 5S", desc: "Organisation, propreté et efficacité au poste de travail." },
-    en: { title: "5S Methodology", desc: "Organization, cleanliness and workplace efficiency." },
-  },
-  {
-    slug: "gestion-evacuation",
-    icon: DoorOpen,
-    fr: { title: "Gestion d'une Évacuation", desc: "Organisation et animation des exercices d'évacuation." },
-    en: { title: "Evacuation Management", desc: "Organization of evacuation drills and procedures." },
-  },
-  {
-    slug: "iso-45001",
-    icon: Award,
-    fr: { title: "Management SST selon la norme ISO 45001", desc: "Système de management de la santé et sécurité au travail." },
-    en: { title: "OH&S Management per ISO 45001", desc: "Occupational health and safety management system." },
-  },
-  {
-    slug: "arbre-des-causes",
-    icon: GitBranch,
-    fr: { title: "Analyse des accidents du travail par la méthode de l'arbre des causes", desc: "Méthodologie d'analyse des accidents du travail." },
-    en: { title: "Accident Analysis — Causes Tree Method", desc: "Workplace accident analysis methodology." },
-  },
-  {
-    slug: "rps",
-    icon: Brain,
-    fr: { title: "Les Risques Psychosociaux", desc: "Stress, burn-out, harcèlement et qualité de vie au travail." },
-    en: { title: "Psychosocial Risks", desc: "Stress, burnout, harassment and workplace wellbeing." },
-  },
-  {
     slug: "espace-confine",
     icon: Box,
     fr: { title: "Travail en Espace Confiné", desc: "Prévention, permis de travail et procédures de sauvetage." },
     en: { title: "Confined Space Work", desc: "Prevention, work permits and rescue procedures." },
   },
   {
+    slug: "rps",
+    icon: Brain,
+    fr: { title: "Risques Psychosociaux", desc: "Stress, burn-out, harcèlement et qualité de vie au travail." },
+    en: { title: "Psychosocial Risks", desc: "Stress, burnout, harassment and workplace wellbeing." },
+  },
+  {
     slug: "haccp",
     icon: Utensils,
-    fr: { title: "Hygiène Alimentaire HACCP", desc: "Sécurité sanitaire des aliments et méthode HACCP." },
+    fr: { title: "Hygiène Alimentaire – HACCP", desc: "Sécurité sanitaire des aliments et méthode HACCP." },
     en: { title: "HACCP Food Hygiene", desc: "Food safety and the HACCP methodology." },
+  },
+  {
+    slug: "arbre-des-causes",
+    icon: GitBranch,
+    fr: { title: "Analyse des Accidents du Travail par l'Arbre des Causes", desc: "Méthodologie d'analyse des accidents du travail." },
+    en: { title: "Accident Analysis — Causes Tree Method", desc: "Workplace accident analysis methodology." },
+  },
+  {
+    slug: "bruit-ari",
+    icon: Volume2,
+    fr: { title: "Bruit au Travail et Protection Respiratoire", desc: "Prévention du bruit et utilisation des appareils respiratoires isolants." },
+    en: { title: "Workplace Noise & Respiratory Protection", desc: "Noise prevention and self-contained breathing apparatus." },
   },
 ];
 
@@ -114,8 +89,7 @@ export function TrainingGrid() {
                 <div className="inline-flex items-center justify-center w-12 h-12 rounded-lg bg-accent/10 text-accent group-hover:bg-accent group-hover:text-white transition-colors">
                   <Icon size={24} />
                 </div>
-                <h3 className="mt-5 text-lg font-semibold text-primary">{c.title}</h3>
-                <p className="mt-2 text-sm text-muted-foreground leading-relaxed flex-1">{c.desc}</p>
+                <h3 className="mt-5 text-lg font-semibold text-primary flex-1">{c.title}</h3>
                 <span className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-accent">
                   {t("training.learn")} <ArrowRight size={14} className="group-hover:translate-x-0.5 transition-transform" />
                 </span>

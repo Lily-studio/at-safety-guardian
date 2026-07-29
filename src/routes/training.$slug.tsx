@@ -52,7 +52,7 @@ function TrainingDetail() {
       <section className="relative bg-gradient-to-br from-primary to-primary-light text-white pt-32 pb-16">
         <div className="container-x">
           <Link to="/training" className="inline-flex items-center gap-2 text-sm text-white/80 hover:text-accent">
-            <ArrowLeft size={16} /> Toutes les formations
+            <ArrowLeft size={16} /> Retour aux formations
           </Link>
           <div className="mt-6 flex items-start gap-5">
             <div className="w-16 h-16 rounded-xl bg-accent/20 border border-accent/40 flex items-center justify-center text-accent shrink-0">
