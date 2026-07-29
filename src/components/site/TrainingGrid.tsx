@@ -1,6 +1,5 @@
 import { Link } from "@tanstack/react-router";
 import { useI18n } from "@/lib/i18n";
-import { ArrowRight } from "lucide-react";
 import {
   Flame, HeartPulse, PackageOpen, MoveUp, Box, Brain, Utensils, GitBranch, Volume2,
 } from "lucide-react";
@@ -77,22 +76,15 @@ export function TrainingGrid() {
         <SectionHeader eyebrow="03" title={t("training.title")} subtitle={t("training.subtitle")} />
         <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {trainingPrograms.map((p) => {
-            const Icon = p.icon;
             const c = p[lang];
             return (
               <Link
                 key={p.slug}
-                to="/training/$slug"
+                to="/formations/$slug"
                 params={{ slug: p.slug }}
-                className="group bg-white rounded-xl p-6 border border-border hover:border-accent/40 hover:shadow-[var(--shadow-elegant)] transition-all duration-300 flex flex-col"
+                className="group bg-white rounded-xl p-6 border border-border hover:border-accent/40 hover:shadow-[var(--shadow-elegant)] transition-all duration-300 flex min-h-32 items-center justify-center text-center"
               >
-                <div className="inline-flex items-center justify-center w-12 h-12 rounded-lg bg-accent/10 text-accent group-hover:bg-accent group-hover:text-white transition-colors">
-                  <Icon size={24} />
-                </div>
-                <h3 className="mt-5 text-lg font-semibold text-primary flex-1">{c.title}</h3>
-                <span className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-accent">
-                  {t("training.learn")} <ArrowRight size={14} className="group-hover:translate-x-0.5 transition-transform" />
-                </span>
+                <h3 className="text-lg font-semibold text-primary group-hover:text-accent transition-colors">{c.title}</h3>
               </Link>
             );
           })}
