@@ -11,8 +11,9 @@ export const Route = createFileRoute("/formations/")({
       { property: "og:description", content: "Formations HSE avec fiches techniques dédiées : incendie, secourisme, manutention, hauteur, espace confiné, RPS, HACCP, arbre des causes et bruit/ARI." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
+      { property: "og:url", content: "https://at-safety-guardian.lovable.app/formations" },
     ],
-    links: [{ rel: "canonical", href: "/formations" }],
+    links: [{ rel: "canonical", href: "https://at-safety-guardian.lovable.app/formations" }],
     scripts: [{
       type: "application/ld+json",
       children: JSON.stringify({

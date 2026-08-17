@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import type {} from "@tanstack/react-start";
 import { trainingPrograms } from "@/components/site/TrainingGrid";
 
-const BASE_URL = "";
+const BASE_URL = "https://at-safety-guardian.lovable.app";
 
 export const Route = createFileRoute("/sitemap.xml")({
   server: {
