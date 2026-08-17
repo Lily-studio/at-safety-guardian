@@ -2,3 +2,5 @@ User-agent: *
 Allow: /
 Disallow: /privacy
 Disallow: /terms
+
+Sitemap: https://at-safety-guardian.lovable.app/sitemap.xml
