@@ -12,8 +12,15 @@ export const Route = createFileRoute("/formations/$slug")({
   },
   head: ({ loaderData }) => {
     const p = loaderData?.program;
-    const title = p ? `${p.fr.title} — Fiche Technique | AT Safety Prive` : "Fiche Technique — AT Safety Prive";
-    const desc = p?.fr.desc ?? "Fiche technique de formation HSE proposée par AT Safety Prive.";
+    const fiche = loaderData?.fiche;
+    if (!p || !fiche) {
+      return {
+        meta: [{ title: "Formation introuvable — AT Safety Prive" }, { name: "robots", content: "noindex" }],
+      };
+    }
+    const title = `${p.fr.title} — Formation HSE au Maroc | AT Safety Prive`;
+    const desc = `${fiche.objectif} Durée : ${fiche.duree} Formation animée au Maroc par AT SAFETY PRIVE.`.slice(0, 158);
+    const url = `${SITE_URL}/formations/${p.slug}`;
     return {
       meta: [
         { title },
@@ -21,9 +28,47 @@ export const Route = createFileRoute("/formations/$slug")({
         { property: "og:title", content: title },
         { property: "og:description", content: desc },
         { property: "og:type", content: "article" },
+        { property: "og:url", content: url },
         { name: "twitter:card", content: "summary" },
       ],
-      links: p ? [{ rel: "canonical", href: `/formations/${p.slug}` }] : [],
+      links: [{ rel: "canonical", href: url }],
+      scripts: [
+        {
+          type: "application/ld+json",
+          children: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Course",
+            name: fiche.title,
+            description: fiche.objectif,
+            url,
+            inLanguage: "fr",
+            provider: {
+              "@type": "Organization",
+              name: "AT SAFETY PRIVE",
+              url: SITE_URL,
+              areaServed: "MA",
+            },
+            hasCourseInstance: {
+              "@type": "CourseInstance",
+              courseMode: "onsite",
+              courseWorkload: fiche.duree,
+              location: { "@type": "Country", name: "Maroc" },
+            },
+          }),
+        },
+        {
+          type: "application/ld+json",
+          children: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            itemListElement: [
+              { "@type": "ListItem", position: 1, name: "Accueil", item: `${SITE_URL}/` },
+              { "@type": "ListItem", position: 2, name: "Formations", item: `${SITE_URL}/formations` },
+              { "@type": "ListItem", position: 3, name: fiche.title, item: url },
+            ],
+          }),
+        },
+      ],
     };
   },
   notFoundComponent: () => (
