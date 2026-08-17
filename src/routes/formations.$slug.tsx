@@ -3,6 +3,8 @@ import { ArrowLeft, Award, BookOpen, CheckCircle2, ClipboardCheck, Clock, Gradua
 import { trainingPrograms } from "@/components/site/TrainingGrid";
 import { getFiche } from "@/lib/fiches";
 
+const SITE_URL = "https://at-safety-guardian.lovable.app";
+
 export const Route = createFileRoute("/formations/$slug")({
   loader: ({ params }) => {
     const program = trainingPrograms.find((p) => p.slug === params.slug);
