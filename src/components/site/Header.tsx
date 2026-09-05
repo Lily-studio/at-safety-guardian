@@ -3,11 +3,14 @@ import { Menu, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import logoAsset from "@/assets/logo.png.asset.json";
 import { useI18n, type Lang } from "@/lib/i18n";
+import { pick, useNav, useSettings } from "@/lib/cms";
 
 export function Header() {
   const { t, lang, setLang } = useI18n();
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
+  const branding = useSettings("branding");
+  const logoUrl = (branding.logo_url as string) || logoAsset.url;
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 12);
@@ -16,14 +19,23 @@ export function Header() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  const links = [
-    { to: "/", label: t("nav.home") },
-    { to: "/about", label: t("nav.about") },
-    { to: "/formations", label: t("nav.training") },
-    { to: "/consulting", label: t("nav.consulting") },
-    { to: "/references", label: t("nav.references") },
-    { to: "/contact", label: t("nav.contact") },
-  ] as const;
+  const dbLinks = useNav("header");
+  const ctaItems = useNav("header_cta");
+  const cta = ctaItems[0];
+
+  const links = dbLinks.length
+    ? dbLinks.map((n) => ({ to: n.href, label: pick(lang, n.label_fr, n.label_en) }))
+    : [
+        { to: "/", label: t("nav.home") },
+        { to: "/about", label: t("nav.about") },
+        { to: "/formations", label: t("nav.training") },
+        { to: "/consulting", label: t("nav.consulting") },
+        { to: "/references", label: t("nav.references") },
+        { to: "/contact", label: t("nav.contact") },
+      ];
+
+  const ctaLabel = cta ? pick(lang, cta.label_fr, cta.label_en) : t("nav.quote");
+  const ctaHref = cta?.href || "/contact";
 
   return (
     <header
@@ -33,7 +45,7 @@ export function Header() {
     >
       <div className="container-x flex items-center justify-between h-18 py-3">
         <Link to="/" className="flex items-center gap-2 shrink-0" aria-label="AT Safety Prive - Accueil">
-          <img src={logoAsset.url} alt="AT Safety Prive" className="h-12 w-auto" width={512} height={512} />
+          <img src={logoUrl} alt="AT Safety Prive" className="h-12 w-auto" width={512} height={512} />
         </Link>
 
         <nav className="hidden lg:flex items-center gap-1" aria-label="Primary">
@@ -65,8 +77,8 @@ export function Header() {
               </button>
             ))}
           </div>
-          <Link to="/contact" className="hidden md:inline-flex btn-accent text-sm">
-            {t("nav.quote")}
+          <Link to={ctaHref} className="hidden md:inline-flex btn-accent text-sm">
+            {ctaLabel}
           </Link>
           <button
             onClick={() => setOpen(!open)}
@@ -104,8 +116,8 @@ export function Header() {
                 </button>
               ))}
             </div>
-            <Link to="/contact" onClick={() => setOpen(false)} className="btn-accent mt-2">
-              {t("nav.quote")}
+            <Link to={ctaHref} onClick={() => setOpen(false)} className="btn-accent mt-2">
+              {ctaLabel}
             </Link>
           </nav>
         </div>
