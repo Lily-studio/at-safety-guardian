@@ -51,13 +51,20 @@ export const getFormation = createServerFn({ method: "GET" })
       .from("formations")
       .select("*")
       .eq("slug", data.slug)
+      .eq("status", "published")
+      .eq("visible", true)
       .maybeSingle();
     return row ?? null;
   });
 
 export const getPublicFormationSlugs = createServerFn({ method: "GET" }).handler(async () => {
   const sb = publicClient();
-  const { data } = await sb.from("formations").select("slug,updated_at").order("sort_order");
+  const { data } = await sb
+    .from("formations")
+    .select("slug,updated_at")
+    .eq("status", "published")
+    .eq("visible", true)
+    .order("sort_order");
   return data ?? [];
 });
 
@@ -81,6 +88,9 @@ export const submitLead = createServerFn({ method: "POST" })
   .handler(async ({ data }) => {
     const sb = publicClient();
     const { error } = await sb.from("leads").insert(data);
-    if (error) return { ok: false as const };
+    if (error) {
+      console.error("submitLead failed", error);
+      return { ok: false as const };
+    }
     return { ok: true as const };
   });
