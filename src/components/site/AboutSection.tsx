@@ -1,38 +1,48 @@
-import { ShieldAlert, Award, Wrench, HeartHandshake, CheckCircle2 } from "lucide-react";
+import { CheckCircle2 } from "lucide-react";
 import { useI18n } from "@/lib/i18n";
 import { SectionHeader } from "./TrainingGrid";
+import { asArray, asObject, pick, useSection } from "@/lib/cms";
+import { getIcon } from "@/lib/icons";
+
+type Bullet = { fr?: string; en?: string };
+type Value = { icon?: string; title_fr?: string; title_en?: string; desc_fr?: string; desc_en?: string };
 
 export function AboutSection() {
   const { t, lang } = useI18n();
-  const values = [
-    { icon: ShieldAlert, t: t("about.value1.t"), d: t("about.value1.d") },
-    { icon: Award, t: t("about.value2.t"), d: t("about.value2.d") },
-    { icon: Wrench, t: t("about.value3.t"), d: t("about.value3.d") },
-    { icon: HeartHandshake, t: t("about.value4.t"), d: t("about.value4.d") },
-  ];
-  const bullets = lang === "fr"
-    ? ["Formations Santé & Sécurité", "Prévention des risques", "Conseil HSE", "Audits de sécurité", "Conformité réglementaire", "Systèmes de management HSE"]
-    : ["Health & Safety Training", "Risk Prevention", "HSE Consulting", "Safety Audits", "Regulatory Compliance", "HSE Management Systems"];
+  const section = useSection("home", "about");
+  const data = asObject(section?.data);
+  const bullets = asArray<Bullet>(data.bullets);
+  const values = asArray<Value>(data.values);
 
   return (
     <section id="about" className="section-y bg-white">
       <div className="container-x grid gap-12 lg:grid-cols-2 lg:gap-16 items-start">
         <div>
-          <SectionHeader eyebrow="02" title={t("about.title")} center={false} />
-          <p className="mt-6 text-base md:text-lg text-muted-foreground leading-relaxed">{t("about.p1")}</p>
-          <p className="mt-4 text-base text-muted-foreground leading-relaxed">{t("about.p2")}</p>
-          <p className="mt-6 font-semibold text-primary">{t("about.support")}</p>
+          <SectionHeader
+            eyebrow={section?.eyebrow ?? "02"}
+            title={pick(lang, section?.title_fr, section?.title_en) || t("about.title")}
+            center={false}
+          />
+          <p className="mt-6 text-base md:text-lg text-muted-foreground leading-relaxed">
+            {pick(lang, section?.body_fr, section?.body_en) || t("about.p1")}
+          </p>
+          <p className="mt-4 text-base text-muted-foreground leading-relaxed">
+            {pick(lang, data.p2_fr as string, data.p2_en as string) || t("about.p2")}
+          </p>
+          <p className="mt-6 font-semibold text-primary">
+            {pick(lang, data.support_fr as string, data.support_en as string) || t("about.support")}
+          </p>
           <ul className="mt-4 grid sm:grid-cols-2 gap-x-6 gap-y-2">
-            {bullets.map((b) => (
-              <li key={b} className="flex items-start gap-2 text-sm text-foreground">
-                <CheckCircle2 size={18} className="text-accent shrink-0 mt-0.5" /> {b}
+            {bullets.map((b, i) => (
+              <li key={i} className="flex items-start gap-2 text-sm text-foreground">
+                <CheckCircle2 size={18} className="text-accent shrink-0 mt-0.5" /> {pick(lang, b.fr, b.en)}
               </li>
             ))}
           </ul>
         </div>
         <div className="grid grid-cols-2 gap-4">
           {values.map((v, i) => {
-            const Icon = v.icon;
+            const Icon = getIcon(v.icon);
             return (
               <div
                 key={i}
@@ -41,8 +51,8 @@ export function AboutSection() {
                 <div className="w-12 h-12 rounded-lg bg-primary text-white flex items-center justify-center">
                   <Icon size={22} />
                 </div>
-                <h3 className="mt-4 text-base font-semibold text-primary">{v.t}</h3>
-                <p className="mt-2 text-sm text-muted-foreground leading-relaxed">{v.d}</p>
+                <h3 className="mt-4 text-base font-semibold text-primary">{pick(lang, v.title_fr, v.title_en)}</h3>
+                <p className="mt-2 text-sm text-muted-foreground leading-relaxed">{pick(lang, v.desc_fr, v.desc_en)}</p>
               </div>
             );
           })}
