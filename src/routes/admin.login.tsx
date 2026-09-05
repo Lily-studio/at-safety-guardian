@@ -81,30 +81,45 @@ function LoginPage() {
         </div>
         <h1 className="mt-4 text-xl font-bold text-primary">Espace d'administration</h1>
         <p className="mt-1 text-sm text-muted-foreground">
-          {mode === "login" ? "Connectez-vous pour gérer le site." : "Recevez un lien de réinitialisation."}
+          {mode === "login"
+            ? "Connectez-vous pour gérer le site."
+            : mode === "reset"
+              ? "Recevez un lien de réinitialisation."
+              : "Première installation : créez le compte administrateur."}
         </p>
-        <form onSubmit={mode === "login" ? signIn : sendReset} className="mt-6 space-y-4">
+        <form onSubmit={mode === "login" ? signIn : mode === "setup" ? signUp : sendReset} className="mt-6 space-y-4">
           <label className="block">
             <span className="block text-sm font-medium text-primary mb-1.5">E-mail</span>
             <input type="email" required autoComplete="email" className={input} value={email} onChange={(e) => setEmail(e.target.value)} />
           </label>
-          {mode === "login" && (
+          {mode !== "reset" && (
             <label className="block">
               <span className="block text-sm font-medium text-primary mb-1.5">Mot de passe</span>
-              <input type="password" required autoComplete="current-password" className={input} value={password} onChange={(e) => setPassword(e.target.value)} />
+              <input
+                type="password"
+                required
+                minLength={8}
+                autoComplete={mode === "setup" ? "new-password" : "current-password"}
+                className={input}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
             </label>
           )}
           <button type="submit" disabled={busy} className="btn-accent w-full justify-center disabled:opacity-60">
             {busy && <Loader2 size={16} className="animate-spin" />}
-            {mode === "login" ? "Se connecter" : "Envoyer le lien"}
+            {mode === "login" ? "Se connecter" : mode === "setup" ? "Créer le compte" : "Envoyer le lien"}
           </button>
         </form>
-        <button
-          onClick={() => setMode(mode === "login" ? "reset" : "login")}
-          className="mt-4 text-sm text-accent hover:underline"
-        >
-          {mode === "login" ? "Mot de passe oublié ?" : "Retour à la connexion"}
-        </button>
+        <div className="mt-4 flex flex-col gap-1 text-sm">
+          <button onClick={() => setMode(mode === "reset" ? "login" : "reset")} className="text-accent hover:underline text-left">
+            {mode === "reset" ? "Retour à la connexion" : "Mot de passe oublié ?"}
+          </button>
+          <button onClick={() => setMode(mode === "setup" ? "login" : "setup")} className="text-muted-foreground hover:underline text-left">
+            {mode === "setup" ? "Retour à la connexion" : "Première installation ?"}
+          </button>
+        </div>
+
       </div>
     </div>
   );
