@@ -23,6 +23,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as FormationsIndexRouteImport } from './routes/formations.index'
 import { Route as TrainingSlugRouteImport } from './routes/training.$slug'
 import { Route as FormationsSlugRouteImport } from './routes/formations.$slug'
+import { Route as AdminLoginRouteImport } from './routes/admin.login'
 
 const TrainingRoute = TrainingRouteImport.update({
   id: '/training',
@@ -94,11 +95,16 @@ const FormationsSlugRoute = FormationsSlugRouteImport.update({
   path: '/$slug',
   getParentRoute: () => FormationsRoute,
 } as any)
+const AdminLoginRoute = AdminLoginRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => AdminRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
-  '/admin': typeof AdminRoute
+  '/admin': typeof AdminRouteWithChildren
   '/consulting': typeof ConsultingRoute
   '/contact': typeof ContactRoute
   '/formations': typeof FormationsRouteWithChildren
@@ -107,6 +113,7 @@ export interface FileRoutesByFullPath {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/terms': typeof TermsRoute
   '/training': typeof TrainingRouteWithChildren
+  '/admin/login': typeof AdminLoginRoute
   '/formations/$slug': typeof FormationsSlugRoute
   '/training/$slug': typeof TrainingSlugRoute
   '/formations/': typeof FormationsIndexRoute
@@ -114,7 +121,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
-  '/admin': typeof AdminRoute
+  '/admin': typeof AdminRouteWithChildren
   '/consulting': typeof ConsultingRoute
   '/contact': typeof ContactRoute
   '/privacy': typeof PrivacyRoute
@@ -122,6 +129,7 @@ export interface FileRoutesByTo {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/terms': typeof TermsRoute
   '/training': typeof TrainingRouteWithChildren
+  '/admin/login': typeof AdminLoginRoute
   '/formations/$slug': typeof FormationsSlugRoute
   '/training/$slug': typeof TrainingSlugRoute
   '/formations': typeof FormationsIndexRoute
@@ -130,7 +138,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
-  '/admin': typeof AdminRoute
+  '/admin': typeof AdminRouteWithChildren
   '/consulting': typeof ConsultingRoute
   '/contact': typeof ContactRoute
   '/formations': typeof FormationsRouteWithChildren
@@ -139,6 +147,7 @@ export interface FileRoutesById {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/terms': typeof TermsRoute
   '/training': typeof TrainingRouteWithChildren
+  '/admin/login': typeof AdminLoginRoute
   '/formations/$slug': typeof FormationsSlugRoute
   '/training/$slug': typeof TrainingSlugRoute
   '/formations/': typeof FormationsIndexRoute
@@ -157,6 +166,7 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/terms'
     | '/training'
+    | '/admin/login'
     | '/formations/$slug'
     | '/training/$slug'
     | '/formations/'
@@ -172,6 +182,7 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/terms'
     | '/training'
+    | '/admin/login'
     | '/formations/$slug'
     | '/training/$slug'
     | '/formations'
@@ -188,6 +199,7 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/terms'
     | '/training'
+    | '/admin/login'
     | '/formations/$slug'
     | '/training/$slug'
     | '/formations/'
@@ -196,7 +208,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
-  AdminRoute: typeof AdminRoute
+  AdminRoute: typeof AdminRouteWithChildren
   ConsultingRoute: typeof ConsultingRoute
   ContactRoute: typeof ContactRoute
   FormationsRoute: typeof FormationsRouteWithChildren
@@ -307,8 +319,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof FormationsSlugRouteImport
       parentRoute: typeof FormationsRoute
     }
+    '/admin/login': {
+      id: '/admin/login'
+      path: '/login'
+      fullPath: '/admin/login'
+      preLoaderRoute: typeof AdminLoginRouteImport
+      parentRoute: typeof AdminRoute
+    }
   }
 }
+
+interface AdminRouteChildren {
+  AdminLoginRoute: typeof AdminLoginRoute
+}
+
+const AdminRouteChildren: AdminRouteChildren = {
+  AdminLoginRoute: AdminLoginRoute,
+}
+
+const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
 
 interface FormationsRouteChildren {
   FormationsSlugRoute: typeof FormationsSlugRoute
@@ -339,7 +368,7 @@ const TrainingRouteWithChildren = TrainingRoute._addFileChildren(
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
-  AdminRoute: AdminRoute,
+  AdminRoute: AdminRouteWithChildren,
   ConsultingRoute: ConsultingRoute,
   ContactRoute: ContactRoute,
   FormationsRoute: FormationsRouteWithChildren,
