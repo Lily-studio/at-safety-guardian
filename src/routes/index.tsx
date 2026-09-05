@@ -1,4 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
+import type { ComponentType } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { Hero } from "@/components/site/Hero";
 import { AboutSection } from "@/components/site/AboutSection";
 import { TrainingGrid } from "@/components/site/TrainingGrid";
@@ -11,9 +13,8 @@ import { CTASection } from "@/components/site/CTASection";
 import { ContactForm } from "@/components/site/ContactForm";
 import { buildHead, loadSeo } from "@/lib/seo";
 import { siteContentQuery } from "@/lib/cms";
-import { useQuery } from "@tanstack/react-query";
 
-const COMPONENTS: Record<string, () => JSX.Element> = {
+const COMPONENTS: Record<string, ComponentType> = {
   hero: Hero,
   about: AboutSection,
   trainings: TrainingGrid,
@@ -40,16 +41,15 @@ export const Route = createFileRoute("/")({
 function Home() {
   const { data } = useQuery(siteContentQuery);
   const sections = (data?.sections ?? []).filter((s) => s.page === "home");
-  const ordered = sections.length
-    ? sections
-    : Object.keys(COMPONENTS).map((block_key, i) => ({ id: block_key, block_key, component: block_key, sort_order: i }) as never);
+  const blocks = sections.length
+    ? sections.map((s) => ({ key: s.id, component: s.component || s.block_key }))
+    : Object.keys(COMPONENTS).map((key) => ({ key, component: key }));
 
   return (
     <>
-      {ordered.map((s) => {
-        const Component = COMPONENTS[s.component] ?? COMPONENTS[s.block_key];
-        if (!Component) return null;
-        return <Component key={s.id} />;
+      {blocks.map((b) => {
+        const Component = COMPONENTS[b.component];
+        return Component ? <Component key={b.key} /> : null;
       })}
     </>
   );
