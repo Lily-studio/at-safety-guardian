@@ -1,6 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { createClient } from "@supabase/supabase-js";
-import type { Database } from "@/integrations/supabase/types";
+import type { Database, Json } from "@/integrations/supabase/types";
 
 function publicClient() {
   return createClient<Database>(
@@ -26,9 +26,9 @@ export const getSiteContent = createServerFn({ method: "GET" }).handler(async ()
     sb.from("seo_pages").select("*"),
   ]);
 
-  const settingsMap: Record<string, Record<string, unknown>> = {};
+  const settingsMap: Record<string, Json> = {};
   for (const row of settings.data ?? []) {
-    settingsMap[row.key] = (row.value ?? {}) as Record<string, unknown>;
+    settingsMap[row.key] = row.value ?? {};
   }
 
   return {

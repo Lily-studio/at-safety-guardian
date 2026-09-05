@@ -17,11 +17,25 @@ import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as FormationsRouteImport } from './routes/formations'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as ConsultingRouteImport } from './routes/consulting'
+import { Route as AdminRouteImport } from './routes/admin'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as FormationsIndexRouteImport } from './routes/formations.index'
+import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as TrainingSlugRouteImport } from './routes/training.$slug'
 import { Route as FormationsSlugRouteImport } from './routes/formations.$slug'
+import { Route as AdminUsersRouteImport } from './routes/admin.users'
+import { Route as AdminSettingsRouteImport } from './routes/admin.settings'
+import { Route as AdminServicesRouteImport } from './routes/admin.services'
+import { Route as AdminSeoRouteImport } from './routes/admin.seo'
+import { Route as AdminSectorsRouteImport } from './routes/admin.sectors'
+import { Route as AdminSectionsRouteImport } from './routes/admin.sections'
+import { Route as AdminReferencesRouteImport } from './routes/admin.references'
+import { Route as AdminNavRouteImport } from './routes/admin.nav'
+import { Route as AdminMediaRouteImport } from './routes/admin.media'
+import { Route as AdminLoginRouteImport } from './routes/admin.login'
+import { Route as AdminLeadsRouteImport } from './routes/admin.leads'
+import { Route as AdminFormationsRouteImport } from './routes/admin.formations'
 
 const TrainingRoute = TrainingRouteImport.update({
   id: '/training',
@@ -63,6 +77,11 @@ const ConsultingRoute = ConsultingRouteImport.update({
   path: '/consulting',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AboutRoute = AboutRouteImport.update({
   id: '/about',
   path: '/about',
@@ -78,6 +97,11 @@ const FormationsIndexRoute = FormationsIndexRouteImport.update({
   path: '/',
   getParentRoute: () => FormationsRoute,
 } as any)
+const AdminIndexRoute = AdminIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AdminRoute,
+} as any)
 const TrainingSlugRoute = TrainingSlugRouteImport.update({
   id: '/$slug',
   path: '/$slug',
@@ -88,10 +112,71 @@ const FormationsSlugRoute = FormationsSlugRouteImport.update({
   path: '/$slug',
   getParentRoute: () => FormationsRoute,
 } as any)
+const AdminUsersRoute = AdminUsersRouteImport.update({
+  id: '/users',
+  path: '/users',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminSettingsRoute = AdminSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminServicesRoute = AdminServicesRouteImport.update({
+  id: '/services',
+  path: '/services',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminSeoRoute = AdminSeoRouteImport.update({
+  id: '/seo',
+  path: '/seo',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminSectorsRoute = AdminSectorsRouteImport.update({
+  id: '/sectors',
+  path: '/sectors',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminSectionsRoute = AdminSectionsRouteImport.update({
+  id: '/sections',
+  path: '/sections',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminReferencesRoute = AdminReferencesRouteImport.update({
+  id: '/references',
+  path: '/references',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminNavRoute = AdminNavRouteImport.update({
+  id: '/nav',
+  path: '/nav',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminMediaRoute = AdminMediaRouteImport.update({
+  id: '/media',
+  path: '/media',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminLoginRoute = AdminLoginRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminLeadsRoute = AdminLeadsRouteImport.update({
+  id: '/leads',
+  path: '/leads',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminFormationsRoute = AdminFormationsRouteImport.update({
+  id: '/formations',
+  path: '/formations',
+  getParentRoute: () => AdminRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/admin': typeof AdminRouteWithChildren
   '/consulting': typeof ConsultingRoute
   '/contact': typeof ContactRoute
   '/formations': typeof FormationsRouteWithChildren
@@ -100,8 +185,21 @@ export interface FileRoutesByFullPath {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/terms': typeof TermsRoute
   '/training': typeof TrainingRouteWithChildren
+  '/admin/formations': typeof AdminFormationsRoute
+  '/admin/leads': typeof AdminLeadsRoute
+  '/admin/login': typeof AdminLoginRoute
+  '/admin/media': typeof AdminMediaRoute
+  '/admin/nav': typeof AdminNavRoute
+  '/admin/references': typeof AdminReferencesRoute
+  '/admin/sections': typeof AdminSectionsRoute
+  '/admin/sectors': typeof AdminSectorsRoute
+  '/admin/seo': typeof AdminSeoRoute
+  '/admin/services': typeof AdminServicesRoute
+  '/admin/settings': typeof AdminSettingsRoute
+  '/admin/users': typeof AdminUsersRoute
   '/formations/$slug': typeof FormationsSlugRoute
   '/training/$slug': typeof TrainingSlugRoute
+  '/admin/': typeof AdminIndexRoute
   '/formations/': typeof FormationsIndexRoute
 }
 export interface FileRoutesByTo {
@@ -114,14 +212,28 @@ export interface FileRoutesByTo {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/terms': typeof TermsRoute
   '/training': typeof TrainingRouteWithChildren
+  '/admin/formations': typeof AdminFormationsRoute
+  '/admin/leads': typeof AdminLeadsRoute
+  '/admin/login': typeof AdminLoginRoute
+  '/admin/media': typeof AdminMediaRoute
+  '/admin/nav': typeof AdminNavRoute
+  '/admin/references': typeof AdminReferencesRoute
+  '/admin/sections': typeof AdminSectionsRoute
+  '/admin/sectors': typeof AdminSectorsRoute
+  '/admin/seo': typeof AdminSeoRoute
+  '/admin/services': typeof AdminServicesRoute
+  '/admin/settings': typeof AdminSettingsRoute
+  '/admin/users': typeof AdminUsersRoute
   '/formations/$slug': typeof FormationsSlugRoute
   '/training/$slug': typeof TrainingSlugRoute
+  '/admin': typeof AdminIndexRoute
   '/formations': typeof FormationsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/admin': typeof AdminRouteWithChildren
   '/consulting': typeof ConsultingRoute
   '/contact': typeof ContactRoute
   '/formations': typeof FormationsRouteWithChildren
@@ -130,8 +242,21 @@ export interface FileRoutesById {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/terms': typeof TermsRoute
   '/training': typeof TrainingRouteWithChildren
+  '/admin/formations': typeof AdminFormationsRoute
+  '/admin/leads': typeof AdminLeadsRoute
+  '/admin/login': typeof AdminLoginRoute
+  '/admin/media': typeof AdminMediaRoute
+  '/admin/nav': typeof AdminNavRoute
+  '/admin/references': typeof AdminReferencesRoute
+  '/admin/sections': typeof AdminSectionsRoute
+  '/admin/sectors': typeof AdminSectorsRoute
+  '/admin/seo': typeof AdminSeoRoute
+  '/admin/services': typeof AdminServicesRoute
+  '/admin/settings': typeof AdminSettingsRoute
+  '/admin/users': typeof AdminUsersRoute
   '/formations/$slug': typeof FormationsSlugRoute
   '/training/$slug': typeof TrainingSlugRoute
+  '/admin/': typeof AdminIndexRoute
   '/formations/': typeof FormationsIndexRoute
 }
 export interface FileRouteTypes {
@@ -139,6 +264,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/about'
+    | '/admin'
     | '/consulting'
     | '/contact'
     | '/formations'
@@ -147,8 +273,21 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/terms'
     | '/training'
+    | '/admin/formations'
+    | '/admin/leads'
+    | '/admin/login'
+    | '/admin/media'
+    | '/admin/nav'
+    | '/admin/references'
+    | '/admin/sections'
+    | '/admin/sectors'
+    | '/admin/seo'
+    | '/admin/services'
+    | '/admin/settings'
+    | '/admin/users'
     | '/formations/$slug'
     | '/training/$slug'
+    | '/admin/'
     | '/formations/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -161,13 +300,27 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/terms'
     | '/training'
+    | '/admin/formations'
+    | '/admin/leads'
+    | '/admin/login'
+    | '/admin/media'
+    | '/admin/nav'
+    | '/admin/references'
+    | '/admin/sections'
+    | '/admin/sectors'
+    | '/admin/seo'
+    | '/admin/services'
+    | '/admin/settings'
+    | '/admin/users'
     | '/formations/$slug'
     | '/training/$slug'
+    | '/admin'
     | '/formations'
   id:
     | '__root__'
     | '/'
     | '/about'
+    | '/admin'
     | '/consulting'
     | '/contact'
     | '/formations'
@@ -176,14 +329,28 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/terms'
     | '/training'
+    | '/admin/formations'
+    | '/admin/leads'
+    | '/admin/login'
+    | '/admin/media'
+    | '/admin/nav'
+    | '/admin/references'
+    | '/admin/sections'
+    | '/admin/sectors'
+    | '/admin/seo'
+    | '/admin/services'
+    | '/admin/settings'
+    | '/admin/users'
     | '/formations/$slug'
     | '/training/$slug'
+    | '/admin/'
     | '/formations/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
+  AdminRoute: typeof AdminRouteWithChildren
   ConsultingRoute: typeof ConsultingRoute
   ContactRoute: typeof ContactRoute
   FormationsRoute: typeof FormationsRouteWithChildren
@@ -252,6 +419,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ConsultingRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/about': {
       id: '/about'
       path: '/about'
@@ -273,6 +447,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof FormationsIndexRouteImport
       parentRoute: typeof FormationsRoute
     }
+    '/admin/': {
+      id: '/admin/'
+      path: '/'
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AdminIndexRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/training/$slug': {
       id: '/training/$slug'
       path: '/$slug'
@@ -287,8 +468,126 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof FormationsSlugRouteImport
       parentRoute: typeof FormationsRoute
     }
+    '/admin/users': {
+      id: '/admin/users'
+      path: '/users'
+      fullPath: '/admin/users'
+      preLoaderRoute: typeof AdminUsersRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/settings': {
+      id: '/admin/settings'
+      path: '/settings'
+      fullPath: '/admin/settings'
+      preLoaderRoute: typeof AdminSettingsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/services': {
+      id: '/admin/services'
+      path: '/services'
+      fullPath: '/admin/services'
+      preLoaderRoute: typeof AdminServicesRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/seo': {
+      id: '/admin/seo'
+      path: '/seo'
+      fullPath: '/admin/seo'
+      preLoaderRoute: typeof AdminSeoRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/sectors': {
+      id: '/admin/sectors'
+      path: '/sectors'
+      fullPath: '/admin/sectors'
+      preLoaderRoute: typeof AdminSectorsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/sections': {
+      id: '/admin/sections'
+      path: '/sections'
+      fullPath: '/admin/sections'
+      preLoaderRoute: typeof AdminSectionsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/references': {
+      id: '/admin/references'
+      path: '/references'
+      fullPath: '/admin/references'
+      preLoaderRoute: typeof AdminReferencesRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/nav': {
+      id: '/admin/nav'
+      path: '/nav'
+      fullPath: '/admin/nav'
+      preLoaderRoute: typeof AdminNavRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/media': {
+      id: '/admin/media'
+      path: '/media'
+      fullPath: '/admin/media'
+      preLoaderRoute: typeof AdminMediaRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/login': {
+      id: '/admin/login'
+      path: '/login'
+      fullPath: '/admin/login'
+      preLoaderRoute: typeof AdminLoginRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/leads': {
+      id: '/admin/leads'
+      path: '/leads'
+      fullPath: '/admin/leads'
+      preLoaderRoute: typeof AdminLeadsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/formations': {
+      id: '/admin/formations'
+      path: '/formations'
+      fullPath: '/admin/formations'
+      preLoaderRoute: typeof AdminFormationsRouteImport
+      parentRoute: typeof AdminRoute
+    }
   }
 }
+
+interface AdminRouteChildren {
+  AdminFormationsRoute: typeof AdminFormationsRoute
+  AdminLeadsRoute: typeof AdminLeadsRoute
+  AdminLoginRoute: typeof AdminLoginRoute
+  AdminMediaRoute: typeof AdminMediaRoute
+  AdminNavRoute: typeof AdminNavRoute
+  AdminReferencesRoute: typeof AdminReferencesRoute
+  AdminSectionsRoute: typeof AdminSectionsRoute
+  AdminSectorsRoute: typeof AdminSectorsRoute
+  AdminSeoRoute: typeof AdminSeoRoute
+  AdminServicesRoute: typeof AdminServicesRoute
+  AdminSettingsRoute: typeof AdminSettingsRoute
+  AdminUsersRoute: typeof AdminUsersRoute
+  AdminIndexRoute: typeof AdminIndexRoute
+}
+
+const AdminRouteChildren: AdminRouteChildren = {
+  AdminFormationsRoute: AdminFormationsRoute,
+  AdminLeadsRoute: AdminLeadsRoute,
+  AdminLoginRoute: AdminLoginRoute,
+  AdminMediaRoute: AdminMediaRoute,
+  AdminNavRoute: AdminNavRoute,
+  AdminReferencesRoute: AdminReferencesRoute,
+  AdminSectionsRoute: AdminSectionsRoute,
+  AdminSectorsRoute: AdminSectorsRoute,
+  AdminSeoRoute: AdminSeoRoute,
+  AdminServicesRoute: AdminServicesRoute,
+  AdminSettingsRoute: AdminSettingsRoute,
+  AdminUsersRoute: AdminUsersRoute,
+  AdminIndexRoute: AdminIndexRoute,
+}
+
+const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
 
 interface FormationsRouteChildren {
   FormationsSlugRoute: typeof FormationsSlugRoute
@@ -319,6 +618,7 @@ const TrainingRouteWithChildren = TrainingRoute._addFileChildren(
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
+  AdminRoute: AdminRouteWithChildren,
   ConsultingRoute: ConsultingRoute,
   ContactRoute: ContactRoute,
   FormationsRoute: FormationsRouteWithChildren,
