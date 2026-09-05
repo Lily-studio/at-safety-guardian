@@ -1,39 +1,8 @@
 import { useI18n } from "@/lib/i18n";
 import { SectionHeader } from "./TrainingGrid";
-import redalLogo from "@/assets/references/redal.webp.asset.json";
-import safranLogo from "@/assets/references/safran.svg.asset.json";
-import danoneLogo from "@/assets/references/danone.png.asset.json";
-import cocaColaLogo from "@/assets/references/coca-cola.svg.asset.json";
-import colgateLogo from "@/assets/references/colgate-palmolive.svg.asset.json";
-import learLogo from "@/assets/references/lear.svg.asset.json";
-import driscollsLogo from "@/assets/references/driscolls.png.asset.json";
-import pasteurLogo from "@/assets/references/institut-pasteur-maroc.png.asset.json";
-import irizarLogo from "@/assets/references/irizar.svg.asset.json";
-import alsaLogo from "@/assets/references/alsa.svg.asset.json";
-import novecLogo from "@/assets/references/novec.png.asset.json";
-import uirLogo from "@/assets/references/uir.png.asset.json";
+import { pick, useSection, useSiteContent, type ReferenceRow } from "@/lib/cms";
 
-type AssetPointer = { url: string };
-const assetUrl = (asset: unknown) => (asset as AssetPointer).url;
-
-const logos = [
-  { name: "REDAL", src: assetUrl(redalLogo) },
-  { name: "Groupe Safran", src: assetUrl(safranLogo) },
-  { name: "Danone", src: assetUrl(danoneLogo) },
-  { name: "Coca-Cola", src: assetUrl(cocaColaLogo) },
-  { name: "Colgate-Palmolive", src: assetUrl(colgateLogo) },
-  { name: "Lear Corporation", src: assetUrl(learLogo) },
-  { name: "Driscoll's", src: assetUrl(driscollsLogo) },
-  { name: "Institut Pasteur", src: assetUrl(pasteurLogo) },
-  { name: "IRIZAR", src: assetUrl(irizarLogo) },
-  { name: "ALSA", src: assetUrl(alsaLogo) },
-  { name: "NOVEC", src: assetUrl(novecLogo) },
-  { name: "Université Internationale de Rabat", src: assetUrl(uirLogo) },
-];
-
-type LogoItem = (typeof logos)[number];
-
-function Row({ items, duration, reverse = false }: { items: LogoItem[]; duration: number; reverse?: boolean }) {
+function Row({ items, duration, reverse = false }: { items: ReferenceRow[]; duration: number; reverse?: boolean }) {
   return (
     <div className="group relative overflow-hidden py-3">
       <div
@@ -42,8 +11,8 @@ function Row({ items, duration, reverse = false }: { items: LogoItem[]; duration
       >
         {[...items, ...items].map((logo, i) => (
           <img
-            key={`${logo.name}-${i}`}
-            src={logo.src}
+            key={`${logo.id}-${i}`}
+            src={logo.logo_url ?? ""}
             alt={`Logo ${logo.name} — client d'AT SAFETY PRIVE`}
             loading="lazy"
             decoding="async"
@@ -57,19 +26,27 @@ function Row({ items, duration, reverse = false }: { items: LogoItem[]; duration
 }
 
 export function ReferencesSection() {
-  const { t } = useI18n();
+  const { t, lang } = useI18n();
+  const content = useSiteContent();
+  const section = useSection("home", "references");
+  const logos = (content?.references ?? []).filter((r) => !!r.logo_url);
   const half = Math.ceil(logos.length / 2);
   const row1 = logos.slice(0, half);
   const row2 = logos.slice(half);
+
   return (
     <section id="references" className="section-y bg-white">
       <div className="container-x">
-        <SectionHeader eyebrow="08" title={t("references.title")} subtitle={t("references.subtitle")} />
+        <SectionHeader
+          eyebrow={section?.eyebrow ?? "08"}
+          title={pick(lang, section?.title_fr, section?.title_en) || t("references.title")}
+          subtitle={pick(lang, section?.subtitle_fr, section?.subtitle_en) || t("references.subtitle")}
+        />
       </div>
       <style>{`@keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }`}</style>
       <div className="mt-12 space-y-6 overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_8%,black_92%,transparent)]">
-        <Row items={row1} duration={40} />
-        <Row items={row2} duration={50} reverse />
+        {row1.length > 0 && <Row items={row1} duration={40} />}
+        {row2.length > 0 && <Row items={row2} duration={50} reverse />}
       </div>
     </section>
   );

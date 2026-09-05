@@ -1,28 +1,25 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
-import { ArrowLeft, Award, BookOpen, CheckCircle2, ClipboardCheck, Clock, GraduationCap, Target, Users } from "lucide-react";
-import { trainingPrograms } from "@/components/site/TrainingGrid";
-import { getFiche } from "@/lib/fiches";
-
-const SITE_URL = "https://at-safety-guardian.lovable.app";
+import {
+  ArrowLeft, Award, BookOpen, CheckCircle2, ClipboardCheck, Clock, Download, GraduationCap, Target, Users,
+} from "lucide-react";
+import { getFormation } from "@/lib/cms.functions";
+import { asArray } from "@/lib/cms";
+import { SITE_URL } from "@/lib/seo";
 
 export const Route = createFileRoute("/formations/$slug")({
-  loader: ({ params }) => {
-    const program = trainingPrograms.find((p) => p.slug === params.slug);
-    const fiche = getFiche(params.slug);
-    if (!program || !fiche) throw notFound();
-    return { program, fiche };
+  loader: async ({ params }) => {
+    const formation = await getFormation({ data: { slug: params.slug } });
+    if (!formation) throw notFound();
+    return { formation };
   },
   head: ({ loaderData }) => {
-    const p = loaderData?.program;
-    const fiche = loaderData?.fiche;
-    if (!p || !fiche) {
-      return {
-        meta: [{ title: "Formation introuvable — AT Safety Prive" }, { name: "robots", content: "noindex" }],
-      };
+    const f = loaderData?.formation;
+    if (!f) {
+      return { meta: [{ title: "Formation introuvable — AT Safety Prive" }, { name: "robots", content: "noindex" }] };
     }
-    const title = `${p.fr.title} — Formation HSE au Maroc | AT Safety Prive`;
-    const desc = `${fiche.objectif} Durée : ${fiche.duree} Formation animée au Maroc par AT SAFETY PRIVE.`.slice(0, 158);
-    const url = `${SITE_URL}/formations/${p.slug}`;
+    const title = f.seo_title || `${f.title_fr} — Formation HSE au Maroc | AT Safety Prive`;
+    const desc = (f.seo_description || `${f.objectif ?? ""} ${f.duree ? `Durée : ${f.duree}.` : ""} Formation animée au Maroc par AT SAFETY PRIVE.`).slice(0, 158);
+    const url = `${SITE_URL}/formations/${f.slug}`;
     return {
       meta: [
         { title },
@@ -40,20 +37,15 @@ export const Route = createFileRoute("/formations/$slug")({
           children: JSON.stringify({
             "@context": "https://schema.org",
             "@type": "Course",
-            name: fiche.title,
-            description: fiche.objectif,
+            name: f.title_fr,
+            description: f.objectif ?? desc,
             url,
             inLanguage: "fr",
-            provider: {
-              "@type": "Organization",
-              name: "AT SAFETY PRIVE",
-              url: SITE_URL,
-              areaServed: "MA",
-            },
+            provider: { "@type": "Organization", name: "AT SAFETY PRIVE", url: SITE_URL, areaServed: "MA" },
             hasCourseInstance: {
               "@type": "CourseInstance",
               courseMode: "onsite",
-              courseWorkload: fiche.duree,
+              courseWorkload: f.duree ?? undefined,
               location: { "@type": "Country", name: "Maroc" },
             },
           }),
@@ -66,7 +58,7 @@ export const Route = createFileRoute("/formations/$slug")({
             itemListElement: [
               { "@type": "ListItem", position: 1, name: "Accueil", item: `${SITE_URL}/` },
               { "@type": "ListItem", position: 2, name: "Formations", item: `${SITE_URL}/formations` },
-              { "@type": "ListItem", position: 3, name: fiche.title, item: url },
+              { "@type": "ListItem", position: 3, name: f.title_fr, item: url },
             ],
           }),
         },
@@ -88,9 +80,12 @@ export const Route = createFileRoute("/formations/$slug")({
   component: TrainingDetail,
 });
 
+type ExtraSection = { title?: string; body?: string; items?: string[] };
+
 function TrainingDetail() {
-  const { program, fiche } = Route.useLoaderData();
-  const Icon = program.icon;
+  const { formation: f } = Route.useLoaderData();
+  const programme = asArray<string>(f.programme);
+  const extras = asArray<ExtraSection>(f.extra_sections);
 
   return (
     <>
@@ -99,15 +94,10 @@ function TrainingDetail() {
           <Link to="/formations" className="inline-flex items-center gap-2 text-sm text-white/80 hover:text-accent">
             <ArrowLeft size={16} /> Retour aux formations
           </Link>
-          <div className="mt-6 flex items-start gap-5">
-            <div className="w-16 h-16 rounded-xl bg-accent/20 border border-accent/40 flex items-center justify-center text-accent shrink-0">
-              <Icon size={32} />
-            </div>
-            <div>
-              <div className="text-xs font-semibold tracking-widest uppercase text-accent">Fiche Technique</div>
-              <h1 className="mt-2 text-3xl md:text-5xl font-bold leading-tight">{fiche.title}</h1>
-              <p className="mt-4 text-lg text-white/85 max-w-2xl">{program.fr.desc}</p>
-            </div>
+          <div className="mt-6">
+            <div className="text-xs font-semibold tracking-widest uppercase text-accent">Fiche Technique</div>
+            <h1 className="mt-2 text-3xl md:text-5xl font-bold leading-tight">{f.title_fr}</h1>
+            {f.description_fr && <p className="mt-4 text-lg text-white/85 max-w-2xl">{f.description_fr}</p>}
           </div>
         </div>
       </section>
@@ -115,46 +105,71 @@ function TrainingDetail() {
       <section className="section-y bg-white">
         <div className="container-x max-w-5xl">
           <div className="space-y-10">
-            <FicheBlock icon={Target} title="Objectif général">
-              <p className="text-foreground leading-relaxed">{fiche.objectif}</p>
-            </FicheBlock>
-
-            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
-              {fiche.public && <MetaCard icon={Users} label="Public" value={fiche.public} />}
-              {fiche.prerequis && <MetaCard icon={CheckCircle2} label="Prérequis" value={fiche.prerequis} />}
-              <MetaCard icon={Clock} label="Durée" value={fiche.duree} />
-              {fiche.attestation && <MetaCard icon={Award} label="Attestation" value={fiche.attestation} />}
-            </div>
-
-            <FicheBlock icon={BookOpen} title="Programme">
-              <ul className="space-y-3">
-                {fiche.programme.map((step: string) => (
-                  <li key={step} className="flex items-start gap-3">
-                    <CheckCircle2 size={20} className="text-accent shrink-0 mt-0.5" />
-                    <span className="text-foreground">{step}</span>
-                  </li>
-                ))}
-              </ul>
-            </FicheBlock>
-
-            {fiche.methodes && (
-              <FicheBlock icon={GraduationCap} title="Méthodes">
-                <p className="text-foreground leading-relaxed">{fiche.methodes}</p>
+            {f.objectif && (
+              <FicheBlock icon={Target} title="Objectif général">
+                <p className="text-foreground leading-relaxed">{f.objectif}</p>
               </FicheBlock>
             )}
 
-            <FicheBlock icon={ClipboardCheck} title="Évaluation">
-              <p className="text-foreground leading-relaxed">{fiche.evaluation}</p>
-            </FicheBlock>
+            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              {f.audience && <MetaCard icon={Users} label="Public" value={f.audience} />}
+              {f.prerequis && <MetaCard icon={CheckCircle2} label="Prérequis" value={f.prerequis} />}
+              {f.duree && <MetaCard icon={Clock} label="Durée" value={f.duree} />}
+              {f.attestation && <MetaCard icon={Award} label="Attestation" value={f.attestation} />}
+            </div>
+
+            {programme.length > 0 && (
+              <FicheBlock icon={BookOpen} title="Programme">
+                <ul className="space-y-3">
+                  {programme.map((step, i) => (
+                    <li key={`${step}-${i}`} className="flex items-start gap-3">
+                      <CheckCircle2 size={20} className="text-accent shrink-0 mt-0.5" />
+                      <span className="text-foreground">{step}</span>
+                    </li>
+                  ))}
+                </ul>
+              </FicheBlock>
+            )}
+
+            {f.methodes && (
+              <FicheBlock icon={GraduationCap} title="Méthodes">
+                <p className="text-foreground leading-relaxed">{f.methodes}</p>
+              </FicheBlock>
+            )}
+
+            {f.evaluation && (
+              <FicheBlock icon={ClipboardCheck} title="Évaluation">
+                <p className="text-foreground leading-relaxed">{f.evaluation}</p>
+              </FicheBlock>
+            )}
+
+            {extras.map((s, i) => (
+              <FicheBlock key={i} icon={BookOpen} title={s.title ?? ""}>
+                {s.body && <p className="text-foreground leading-relaxed">{s.body}</p>}
+                {Array.isArray(s.items) && s.items.length > 0 && (
+                  <ul className="space-y-3 mt-3">
+                    {s.items.map((it, j) => (
+                      <li key={j} className="flex items-start gap-3">
+                        <CheckCircle2 size={20} className="text-accent shrink-0 mt-0.5" />
+                        <span className="text-foreground">{it}</span>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </FicheBlock>
+            ))}
           </div>
 
           <div className="mt-12 flex flex-col sm:flex-row gap-3 border-t border-border pt-8">
             <Link to="/formations" className="btn-primary-outline text-primary justify-center">
               <ArrowLeft size={16} /> Retour aux formations
             </Link>
-            <Link to="/contact" className="btn-accent justify-center">
-              Demander un devis
-            </Link>
+            {f.pdf_url && (
+              <a href={f.pdf_url} target="_blank" rel="noopener noreferrer" className="btn-primary-outline text-primary justify-center">
+                <Download size={16} /> Télécharger la fiche
+              </a>
+            )}
+            <Link to="/contact" className="btn-accent justify-center">Demander un devis</Link>
           </div>
         </div>
       </section>

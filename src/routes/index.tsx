@@ -1,4 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
+import type { ComponentType } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { Hero } from "@/components/site/Hero";
 import { AboutSection } from "@/components/site/AboutSection";
 import { TrainingGrid } from "@/components/site/TrainingGrid";
@@ -9,40 +11,46 @@ import { ProcessSection } from "@/components/site/ProcessSection";
 import { ReferencesSection } from "@/components/site/ReferencesSection";
 import { CTASection } from "@/components/site/CTASection";
 import { ContactForm } from "@/components/site/ContactForm";
+import { buildHead, loadSeo } from "@/lib/seo";
+import { siteContentQuery } from "@/lib/cms";
+
+const COMPONENTS: Record<string, ComponentType> = {
+  hero: Hero,
+  about: AboutSection,
+  trainings: TrainingGrid,
+  consulting: ConsultingSection,
+  stats: StatsSection,
+  sectors: IndustriesSection,
+  process: ProcessSection,
+  references: ReferencesSection,
+  cta: CTASection,
+  contact: ContactForm,
+};
 
 export const Route = createFileRoute("/")({
-  head: () => ({
-    meta: [
-      { title: "AT Safety Prive — Formation & Conseil HSE au Maroc" },
-      {
-        name: "description",
-        content:
-          "Cabinet marocain de conseil HSE : formations Santé & Sécurité au Travail, audits, prévention des risques et conformité réglementaire.",
-      },
-      { property: "og:title", content: "AT Safety Prive — Formation & Conseil HSE" },
-      { property: "og:url", content: "https://at-safety-guardian.lovable.app/" },
-      { property: "og:description", content: "Formations HSE, audits et conseil en santé et sécurité au travail pour les entreprises au Maroc." },
-      { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary_large_image" },
-    ],
-    links: [{ rel: "canonical", href: "https://at-safety-guardian.lovable.app/" }],
-  }),
+  loader: ({ context }) => loadSeo(context.queryClient, "/"),
+  head: ({ loaderData }) =>
+    buildHead("/", loaderData?.seo, {
+      title: "AT Safety Prive — Formation & Conseil HSE au Maroc",
+      description:
+        "Cabinet marocain de conseil HSE : formations Santé & Sécurité au Travail, audits, prévention des risques et conformité réglementaire.",
+    }),
   component: Home,
 });
 
 function Home() {
+  const { data } = useQuery(siteContentQuery);
+  const sections = (data?.sections ?? []).filter((s) => s.page === "home");
+  const blocks = sections.length
+    ? sections.map((s) => ({ key: s.id, component: s.component || s.block_key }))
+    : Object.keys(COMPONENTS).map((key) => ({ key, component: key }));
+
   return (
     <>
-      <Hero />
-      <AboutSection />
-      <TrainingGrid />
-      <ConsultingSection />
-      <StatsSection />
-      <IndustriesSection />
-      <ProcessSection />
-      <ReferencesSection />
-      <CTASection />
-      <ContactForm />
+      {blocks.map((b) => {
+        const Component = COMPONENTS[b.component];
+        return Component ? <Component key={b.key} /> : null;
+      })}
     </>
   );
 }

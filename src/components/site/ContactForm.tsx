@@ -2,6 +2,9 @@ import { useState, type FormEvent } from "react";
 import { z } from "zod";
 import { Mail, MapPin, Phone, Send, CheckCircle2 } from "lucide-react";
 import { useI18n } from "@/lib/i18n";
+import { pick, useCompany, useSection } from "@/lib/cms";
+import { submitLead } from "@/lib/cms.functions";
+import { toast } from "sonner";
 
 const schema = z.object({
   name: z.string().trim().min(2).max(100),
@@ -13,13 +16,17 @@ const schema = z.object({
 });
 
 export function ContactForm() {
-  const { t } = useI18n();
+  const { t, lang } = useI18n();
+  const company = useCompany();
+  const section = useSection("home", "contact");
   const [sent, setSent] = useState(false);
+  const [busy, setBusy] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
 
-  const onSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const fd = new FormData(e.currentTarget);
+    const form = e.currentTarget;
+    const fd = new FormData(form);
     const data = Object.fromEntries(fd.entries());
     const r = schema.safeParse(data);
     if (!r.success) {
@@ -29,11 +36,27 @@ export function ContactForm() {
       return;
     }
     setErrors({});
-    setSent(true);
-    e.currentTarget.reset();
+    setBusy(true);
+    try {
+      const res = await submitLead({ data: { ...r.data, form_type: "contact" } });
+      if (!res.ok) throw new Error("failed");
+      setSent(true);
+      form.reset();
+    } catch {
+      toast.error(lang === "fr" ? "L'envoi a échoué. Merci de réessayer." : "Sending failed. Please try again.");
+    } finally {
+      setBusy(false);
+    }
   };
 
   const field = "w-full rounded-md border border-input bg-white px-4 py-3 text-sm focus:outline-none focus:border-accent focus:ring-2 focus:ring-accent/20 transition-all";
+  const locationVal = pick(lang, company.location_fr, company.location_en) || t("contact.info.locationVal");
+
+  const infos = [
+    company.phone ? { icon: Phone, label: t("contact.info.phone"), value: company.phone } : null,
+    company.email ? { icon: Mail, label: t("contact.info.email"), value: company.email } : null,
+    { icon: MapPin, label: t("contact.info.location"), value: company.address || locationVal },
+  ].filter(Boolean) as Array<{ icon: typeof Phone; label: string; value: string }>;
 
   return (
     <section id="contact" className="section-y bg-surface">
@@ -41,17 +64,17 @@ export function ContactForm() {
         <div className="lg:col-span-2 space-y-6">
           <div>
             <div className="inline-flex items-center gap-2 text-xs font-semibold tracking-widest uppercase text-accent">
-              <span className="w-8 h-px bg-accent" /> 10
+              <span className="w-8 h-px bg-accent" /> {section?.eyebrow ?? "10"}
             </div>
-            <h2 className="mt-3 text-3xl md:text-4xl font-bold text-primary">{t("contact.title")}</h2>
-            <p className="mt-4 text-muted-foreground">{t("contact.subtitle")}</p>
+            <h2 className="mt-3 text-3xl md:text-4xl font-bold text-primary">
+              {pick(lang, section?.title_fr, section?.title_en) || t("contact.title")}
+            </h2>
+            <p className="mt-4 text-muted-foreground">
+              {pick(lang, section?.subtitle_fr, section?.subtitle_en) || t("contact.subtitle")}
+            </p>
           </div>
           <ul className="space-y-4">
-            {[
-              { icon: Phone, label: t("contact.info.phone"), value: "+212 666 249 070" },
-              { icon: Mail, label: t("contact.info.email"), value: "atsafetyprive@gmail.com" },
-              { icon: MapPin, label: t("contact.info.location"), value: t("contact.info.locationVal") },
-            ].map((it, i) => {
+            {infos.map((it, i) => {
               const Icon = it.icon;
               return (
                 <li key={i} className="flex gap-4 items-start p-4 bg-white rounded-lg border border-border">
@@ -60,21 +83,23 @@ export function ContactForm() {
                   </div>
                   <div>
                     <p className="text-xs uppercase font-semibold text-muted-foreground tracking-wide">{it.label}</p>
-                    <p className="text-primary font-medium mt-0.5">{it.value}</p>
+                    <p className="text-primary font-medium mt-0.5 break-words">{it.value}</p>
                   </div>
                 </li>
               );
             })}
           </ul>
-          <div className="rounded-lg overflow-hidden border border-border h-56">
-            <iframe
-              title="Map — Morocco"
-              src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d215031.60!2d-7.62!3d33.57!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0!2sMorocco!5e0!3m2!1sen!2sma!4v1"
-              className="w-full h-full"
-              loading="lazy"
-              referrerPolicy="no-referrer-when-downgrade"
-            />
-          </div>
+          {company.map_embed && (
+            <div className="rounded-lg overflow-hidden border border-border h-56">
+              <iframe
+                title="Map"
+                src={company.map_embed}
+                className="w-full h-full"
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+              />
+            </div>
+          )}
         </div>
 
         <form onSubmit={onSubmit} className="lg:col-span-3 bg-white rounded-2xl p-6 md:p-8 border border-border shadow-[var(--shadow-card)] space-y-4">
@@ -104,7 +129,7 @@ export function ContactForm() {
           <FormRow label={t("contact.message")} error={errors.message}>
             <textarea name="message" required rows={5} className={field} />
           </FormRow>
-          <button type="submit" className="btn-accent w-full sm:w-auto">
+          <button type="submit" disabled={busy} className="btn-accent w-full sm:w-auto disabled:opacity-60">
             {t("contact.send")} <Send size={16} />
           </button>
         </form>
