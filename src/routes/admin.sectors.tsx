@@ -7,7 +7,7 @@ const config: CollectionConfig = {
   title: "Secteurs d'activité",
   labelField: "title_fr",
   hasVisibility: true,
-  defaults: { title_fr: "", visible: true, icon: "factory" },
+  defaults: { title_fr: "", visible: true, icon: "Factory" },
   fields: [
     { name: "title_fr", label: "Titre (FR)", type: "text" },
     { name: "title_en", label: "Titre (EN)", type: "text" },

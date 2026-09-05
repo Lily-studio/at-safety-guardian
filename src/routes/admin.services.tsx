@@ -9,7 +9,7 @@ const config: CollectionConfig = {
   labelField: "title_fr",
   hasVisibility: true,
   hasStatus: true,
-  defaults: { title_fr: "", bullets: [], status: "published", visible: true, icon: "shield-check" },
+  defaults: { title_fr: "", bullets: [], status: "published", visible: true, icon: "ShieldCheck" },
   fields: [
     { name: "title_fr", label: "Titre (FR)", type: "text" },
     { name: "title_en", label: "Titre (EN)", type: "text" },
