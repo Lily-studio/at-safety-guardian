@@ -73,12 +73,12 @@ export type CompanySettings = {
 
 export function useCompany(): CompanySettings {
   const content = useSiteContent();
-  return (content?.settings?.company ?? {}) as CompanySettings;
+  return asObject(content?.settings?.["company"]) as CompanySettings;
 }
 
 export function useSettings(key: string): Record<string, unknown> {
   const content = useSiteContent();
-  return (content?.settings?.[key] ?? {}) as Record<string, unknown>;
+  return asObject(content?.settings?.[key]);
 }
 
 export function useNav(location: string, group?: string) {
