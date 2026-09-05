@@ -17,7 +17,7 @@ function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [busy, setBusy] = useState(false);
-  const [mode, setMode] = useState<"login" | "reset">("login");
+  const [mode, setMode] = useState<"login" | "reset" | "setup">("login");
 
   const signIn = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -25,13 +25,41 @@ function LoginPage() {
     const { error } = await supabase.auth.signInWithPassword({ email: email.trim(), password });
     setBusy(false);
     if (error) return toast.error("Identifiants invalides");
-    const { data: isAdmin } = await supabase.rpc("is_admin");
+    let { data: isAdmin } = await supabase.rpc("is_admin");
+    if (!isAdmin) {
+      // First installation: the very first account becomes the administrator.
+      const { data: claimed } = await supabase.rpc("claim_first_admin");
+      isAdmin = !!claimed;
+    }
     if (!isAdmin) {
       await supabase.auth.signOut();
       return toast.error("Ce compte n'a pas les droits d'administration.");
     }
     navigate({ to: "/admin", replace: true });
   };
+
+  const signUp = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setBusy(true);
+    const { data, error } = await supabase.auth.signUp({
+      email: email.trim(),
+      password,
+      options: { emailRedirectTo: `${window.location.origin}/admin/login` },
+    });
+    setBusy(false);
+    if (error) return toast.error(error.message);
+    if (!data.session) {
+      toast.success("Compte créé. Confirmez votre e-mail puis connectez-vous.");
+      return setMode("login");
+    }
+    const { data: claimed } = await supabase.rpc("claim_first_admin");
+    if (!claimed) {
+      await supabase.auth.signOut();
+      return toast.error("Un administrateur existe déjà. Demandez-lui un accès.");
+    }
+    navigate({ to: "/admin", replace: true });
+  };
+
 
   const sendReset = async (e: React.FormEvent) => {
     e.preventDefault();
