@@ -1,4 +1,4 @@
-import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
+import { createFileRoute, Outlet, redirect, useRouterState } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
 import { AdminShell } from "@/components/admin/AdminShell";
 
@@ -9,7 +9,7 @@ export const Route = createFileRoute("/admin")({
     const { data, error } = await supabase.auth.getUser();
     if (error || !data.user) throw redirect({ to: "/admin/login" });
     const { data: isAdmin } = await supabase.rpc("is_admin");
-    if (!isAdmin) throw redirect({ to: "/admin/login", search: { denied: true } });
+    if (!isAdmin) throw redirect({ to: "/admin/login" });
   },
   head: () => ({
     meta: [
@@ -21,9 +21,11 @@ export const Route = createFileRoute("/admin")({
 });
 
 function AdminLayout() {
-  const pathname = Route.useRouteContext as unknown as never;
-  void pathname;
-  return <Outlet />;
+  const isLogin = useRouterState({ select: (s) => s.location.pathname.startsWith("/admin/login") });
+  if (isLogin) return <Outlet />;
+  return (
+    <AdminShell>
+      <Outlet />
+    </AdminShell>
+  );
 }
-
-export { AdminShell };
