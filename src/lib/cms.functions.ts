@@ -1,14 +1,52 @@
 import { createServerFn } from "@tanstack/react-start";
 import { createClient } from "@supabase/supabase-js";
 import type { Database, Json } from "@/integrations/supabase/types";
+import { supabasePublishableKey, supabaseUrl } from "./runtime-env";
+
+function isNewSupabaseApiKey(value: string): boolean {
+  return value.startsWith("sb_publishable_") || value.startsWith("sb_secret_");
+}
+
+/** New Supabase API keys are opaque strings, not bearer JWTs. */
+function supabaseFetch(key: string): typeof fetch {
+  return (input, init) => {
+    const headers = new Headers(
+      typeof Request !== "undefined" && input instanceof Request ? input.headers : undefined,
+    );
+    if (init?.headers) {
+      new Headers(init.headers).forEach((value, name) => headers.set(name, value));
+    }
+    if (isNewSupabaseApiKey(key) && headers.get("Authorization") === `Bearer ${key}`) {
+      headers.delete("Authorization");
+    }
+    headers.set("apikey", key);
+    return fetch(input, { ...init, headers });
+  };
+}
 
 function publicClient() {
-  return createClient<Database>(
-    process.env["SUPABASE_URL"]!,
-    process.env["SUPABASE_PUBLISHABLE_KEY"]!,
-    { auth: { storage: undefined, persistSession: false, autoRefreshToken: false } },
-  );
+  const url = supabaseUrl();
+  const key = supabasePublishableKey();
+  if (!url || !key) {
+    throw new Error("Missing Supabase configuration (SUPABASE_URL / SUPABASE_PUBLISHABLE_KEY)");
+  }
+  return createClient<Database>(url, key, {
+    global: { fetch: supabaseFetch(key) },
+    auth: { storage: undefined, persistSession: false, autoRefreshToken: false },
+  });
 }
+
+const EMPTY_CONTENT = {
+  settings: {} as Record<string, Json>,
+  nav: [] as never[],
+  sections: [] as never[],
+  formations: [] as never[],
+  services: [] as never[],
+  sectors: [] as never[],
+  references: [] as never[],
+  seo: [] as never[],
+};
+
 
 export const getSiteContent = createServerFn({ method: "GET" }).handler(async () => {
   const sb = publicClient();
