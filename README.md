@@ -632,3 +632,28 @@ cd <repository-name>
 npm i
 npm run dev
 ```
+
+## Deploying to Cloudflare Workers
+
+`bun run build` produces both halves of the deployment:
+
+- `dist/server/index.mjs` — the SSR worker (Nitro `cloudflare-module` preset)
+- `dist/client/` — static assets, bound as `ASSETS` in `dist/server/wrangler.json`
+
+Nitro also writes `.wrangler/deploy/config.json`, so from the repository root:
+
+```bash
+bun run cf:preview   # build + run the production worker locally
+bun run cf:deploy    # build + deploy to Cloudflare
+```
+
+Run wrangler from the repository root (not from `dist/server`), otherwise it
+reports a conflict between the generated wrangler config and the deploy config.
+
+CI: `.github/workflows/deploy.yml` builds and deploys on push to `main`. It needs
+the repository secrets `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID`.
+
+Backend configuration: the app resolves the backend URL and publishable key from
+`process.env`, then the build-time `VITE_*` values in the committed `.env`, then
+public fallbacks in `src/lib/runtime-env.ts`. No Cloudflare environment variables
+are required for the public site to render.
