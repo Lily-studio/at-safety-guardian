@@ -179,11 +179,15 @@ export const submitLead = createServerFn({ method: "POST" })
   })
   .handler(async ({ data }) => {
     try {
-    const sb = publicClient();
-    const { error } = await sb.from("leads").insert(data);
-    if (error) {
+      const sb = publicClient();
+      const { error } = await sb.from("leads").insert(data);
+      if (error) {
+        console.error("submitLead failed", error);
+        return { ok: false as const };
+      }
+      return { ok: true as const };
+    } catch (error) {
       console.error("submitLead failed", error);
       return { ok: false as const };
     }
-    return { ok: true as const };
   });
