@@ -1,6 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { createClient } from "@supabase/supabase-js";
-import type { Database, Json } from "@/integrations/supabase/types";
+import type { Database, Json, Tables } from "@/integrations/supabase/types";
 import { supabasePublishableKey, supabaseUrl } from "./runtime-env";
 
 function isNewSupabaseApiKey(value: string): boolean {
@@ -124,28 +124,41 @@ export const getSiteContent = createServerFn({ method: "GET" }).handler(
 
 export const getFormation = createServerFn({ method: "GET" })
   .inputValidator((data: { slug: string }) => ({ slug: String(data.slug) }))
-  .handler(async ({ data }) => {
-    const sb = publicClient();
-    const { data: row } = await sb
-      .from("formations")
-      .select("*")
-      .eq("slug", data.slug)
-      .eq("status", "published")
-      .eq("visible", true)
-      .maybeSingle();
-    return row ?? null;
+  .handler(async ({ data }): Promise<Tables<"formations"> | null> => {
+    try {
+      const sb = publicClient();
+      const { data: row, error } = await sb
+        .from("formations")
+        .select("*")
+        .eq("slug", data.slug)
+        .eq("status", "published")
+        .eq("visible", true)
+        .maybeSingle();
+      if (error) console.error("getFormation failed", error);
+      return row ?? null;
+    } catch (error) {
+      console.error("getFormation failed", error);
+      return null;
+    }
   });
 
-export const getPublicFormationSlugs = createServerFn({ method: "GET" }).handler(async () => {
-  const sb = publicClient();
-  const { data } = await sb
-    .from("formations")
-    .select("slug,updated_at")
-    .eq("status", "published")
-    .eq("visible", true)
-    .order("sort_order");
-  return data ?? [];
-});
+export const getPublicFormationSlugs = createServerFn({ method: "GET" }).handler(
+  async (): Promise<Array<{ slug: string; updated_at: string | null }>> => {
+    try {
+      const sb = publicClient();
+      const { data } = await sb
+        .from("formations")
+        .select("slug,updated_at")
+        .eq("status", "published")
+        .eq("visible", true)
+        .order("sort_order");
+      return data ?? [];
+    } catch (error) {
+      console.error("getPublicFormationSlugs failed", error);
+      return [];
+    }
+  },
+);
 
 export const submitLead = createServerFn({ method: "POST" })
   .inputValidator((data: Record<string, unknown>) => {
@@ -165,6 +178,7 @@ export const submitLead = createServerFn({ method: "POST" })
     };
   })
   .handler(async ({ data }) => {
+    try {
     const sb = publicClient();
     const { error } = await sb.from("leads").insert(data);
     if (error) {
