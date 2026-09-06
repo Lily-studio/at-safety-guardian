@@ -49,37 +49,58 @@ const EMPTY_CONTENT = {
 
 
 export const getSiteContent = createServerFn({ method: "GET" }).handler(async () => {
-  const sb = publicClient();
-  const [settings, nav, sections, formations, services, sectors, references, seo] = await Promise.all([
-    sb.from("site_settings").select("key,value"),
-    sb.from("nav_items").select("*").order("sort_order"),
-    sb.from("sections").select("*").order("sort_order"),
-    sb
-      .from("formations")
-      .select("id,slug,title_fr,title_en,description_fr,description_en,extra_sections,image_url,sort_order")
-      .order("sort_order"),
-    sb.from("services").select("*").order("sort_order"),
-    sb.from("sectors").select("*").order("sort_order"),
-    sb.from("client_references").select("*").order("sort_order"),
-    sb.from("seo_pages").select("*"),
-  ]);
+  try {
+    const sb = publicClient();
+    const [settings, nav, sections, formations, services, sectors, references, seo] = await Promise.all([
+      sb.from("site_settings").select("key,value"),
+      sb.from("nav_items").select("*").order("sort_order"),
+      sb.from("sections").select("*").order("sort_order"),
+      sb
+        .from("formations")
+        .select("id,slug,title_fr,title_en,description_fr,description_en,extra_sections,image_url,sort_order")
+        .order("sort_order"),
+      sb.from("services").select("*").order("sort_order"),
+      sb.from("sectors").select("*").order("sort_order"),
+      sb.from("client_references").select("*").order("sort_order"),
+      sb.from("seo_pages").select("*"),
+    ]);
 
-  const settingsMap: Record<string, Json> = {};
-  for (const row of settings.data ?? []) {
-    settingsMap[row.key] = row.value ?? {};
+    for (const result of [settings, nav, sections, formations, services, sectors, references, seo]) {
+      if (result.error) console.error("getSiteContent query failed", result.error);
+    }
+
+    const settingsMap: Record<string, Json> = {};
+    for (const row of settings.data ?? []) {
+      settingsMap[row.key] = row.value ?? {};
+    }
+
+    return {
+      settings: settingsMap,
+      nav: nav.data ?? [],
+      sections: sections.data ?? [],
+      formations: formations.data ?? [],
+      services: services.data ?? [],
+      sectors: sectors.data ?? [],
+      references: references.data ?? [],
+      seo: seo.data ?? [],
+    };
+  } catch (error) {
+    // Never let a backend hiccup take the whole page down — the components all
+    // fall back to their built-in French/English content.
+    console.error("getSiteContent failed", error);
+    return EMPTY_CONTENT as unknown as {
+      settings: Record<string, Json>;
+      nav: never[];
+      sections: never[];
+      formations: never[];
+      services: never[];
+      sectors: never[];
+      references: never[];
+      seo: never[];
+    };
   }
-
-  return {
-    settings: settingsMap,
-    nav: nav.data ?? [],
-    sections: sections.data ?? [],
-    formations: formations.data ?? [],
-    services: services.data ?? [],
-    sectors: sectors.data ?? [],
-    references: references.data ?? [],
-    seo: seo.data ?? [],
-  };
 });
+
 
 export const getFormation = createServerFn({ method: "GET" })
   .inputValidator((data: { slug: string }) => ({ slug: String(data.slug) }))
