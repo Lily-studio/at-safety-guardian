@@ -36,70 +36,90 @@ function publicClient() {
   });
 }
 
-const EMPTY_CONTENT = {
-  settings: {} as Record<string, Json>,
-  nav: [] as never[],
-  sections: [] as never[],
-  formations: [] as never[],
-  services: [] as never[],
-  sectors: [] as never[],
-  references: [] as never[],
-  seo: [] as never[],
+type FormationCard = Pick<
+  Tables<"formations">,
+  | "id"
+  | "slug"
+  | "title_fr"
+  | "title_en"
+  | "description_fr"
+  | "description_en"
+  | "extra_sections"
+  | "image_url"
+  | "sort_order"
+>;
+
+export type SiteContentPayload = {
+  settings: Record<string, Json>;
+  nav: Tables<"nav_items">[];
+  sections: Tables<"sections">[];
+  formations: FormationCard[];
+  services: Tables<"services">[];
+  sectors: Tables<"sectors">[];
+  references: Tables<"client_references">[];
+  seo: Tables<"seo_pages">[];
 };
 
+const EMPTY_CONTENT: SiteContentPayload = {
+  settings: {},
+  nav: [],
+  sections: [],
+  formations: [],
+  services: [],
+  sectors: [],
+  references: [],
+  seo: [],
+};
 
-export const getSiteContent = createServerFn({ method: "GET" }).handler(async () => {
-  try {
-    const sb = publicClient();
-    const [settings, nav, sections, formations, services, sectors, references, seo] = await Promise.all([
-      sb.from("site_settings").select("key,value"),
-      sb.from("nav_items").select("*").order("sort_order"),
-      sb.from("sections").select("*").order("sort_order"),
-      sb
-        .from("formations")
-        .select("id,slug,title_fr,title_en,description_fr,description_en,extra_sections,image_url,sort_order")
-        .order("sort_order"),
-      sb.from("services").select("*").order("sort_order"),
-      sb.from("sectors").select("*").order("sort_order"),
-      sb.from("client_references").select("*").order("sort_order"),
-      sb.from("seo_pages").select("*"),
-    ]);
+export const getSiteContent = createServerFn({ method: "GET" }).handler(
+  async (): Promise<SiteContentPayload> => {
+    try {
+      const sb = publicClient();
+      const [settings, nav, sections, formations, services, sectors, references, seo] =
+        await Promise.all([
+          sb.from("site_settings").select("key,value"),
+          sb.from("nav_items").select("*").order("sort_order"),
+          sb.from("sections").select("*").order("sort_order"),
+          sb
+            .from("formations")
+            .select(
+              "id,slug,title_fr,title_en,description_fr,description_en,extra_sections,image_url,sort_order",
+            )
+            .order("sort_order"),
+          sb.from("services").select("*").order("sort_order"),
+          sb.from("sectors").select("*").order("sort_order"),
+          sb.from("client_references").select("*").order("sort_order"),
+          sb.from("seo_pages").select("*"),
+        ]);
 
-    for (const result of [settings, nav, sections, formations, services, sectors, references, seo]) {
-      if (result.error) console.error("getSiteContent query failed", result.error);
+      for (const result of [settings, nav, sections, formations, services, sectors, references, seo]) {
+        if (result.error) console.error("getSiteContent query failed", result.error);
+      }
+
+      const settingsMap: Record<string, Json> = {};
+      for (const row of settings.data ?? []) {
+        settingsMap[row.key] = row.value ?? {};
+      }
+
+      return {
+        settings: settingsMap,
+        nav: nav.data ?? [],
+        sections: sections.data ?? [],
+        formations: formations.data ?? [],
+        services: services.data ?? [],
+        sectors: sectors.data ?? [],
+        references: references.data ?? [],
+        seo: seo.data ?? [],
+      };
+    } catch (error) {
+      // Never let a backend hiccup take the whole page down — components fall
+      // back to their built-in French/English content.
+      console.error("getSiteContent failed", error);
+      return EMPTY_CONTENT;
     }
+  },
+);
 
-    const settingsMap: Record<string, Json> = {};
-    for (const row of settings.data ?? []) {
-      settingsMap[row.key] = row.value ?? {};
-    }
-
-    return {
-      settings: settingsMap,
-      nav: nav.data ?? [],
-      sections: sections.data ?? [],
-      formations: formations.data ?? [],
-      services: services.data ?? [],
-      sectors: sectors.data ?? [],
-      references: references.data ?? [],
-      seo: seo.data ?? [],
-    };
-  } catch (error) {
-    // Never let a backend hiccup take the whole page down — the components all
-    // fall back to their built-in French/English content.
-    console.error("getSiteContent failed", error);
-    return EMPTY_CONTENT as unknown as {
-      settings: Record<string, Json>;
-      nav: never[];
-      sections: never[];
-      formations: never[];
-      services: never[];
-      sectors: never[];
-      references: never[];
-      seo: never[];
-    };
-  }
-});
 
 
 export const getFormation = createServerFn({ method: "GET" })
