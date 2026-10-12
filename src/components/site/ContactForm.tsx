@@ -1,18 +1,19 @@
 import { useState, type FormEvent } from "react";
 import { z } from "zod";
-import { Mail, MapPin, Phone, Send, CheckCircle2 } from "lucide-react";
+import { Mail, MapPin, MessageCircle, Phone, Send, CheckCircle2 } from "lucide-react";
+import { buildWhatsAppUrl } from "@/lib/whatsapp";
 import { useI18n } from "@/lib/i18n";
 import { pick, useCompany, useSection } from "@/lib/cms";
 import { submitLead } from "@/lib/cms.functions";
 import { toast } from "sonner";
 
 const schema = z.object({
-  name: z.string().trim().min(2).max(100),
+  name: z.string().trim().min(2, "Veuillez indiquer votre nom (2 caractères min.)").max(100),
   company: z.string().trim().max(120).optional().or(z.literal("")),
-  phone: z.string().trim().min(6).max(30),
-  email: z.string().trim().email().max(255),
-  subject: z.string().trim().min(2).max(150),
-  message: z.string().trim().min(10).max(2000),
+  phone: z.string().trim().regex(/^\+?[0-9\s().-]{6,30}$/, "Numéro de téléphone invalide"),
+  email: z.string().trim().email("Adresse e-mail invalide").max(255),
+  subject: z.string().trim().min(2, "Veuillez préciser le service ou la formation souhaité(e)").max(150),
+  message: z.string().trim().min(10, "Votre message doit contenir au moins 10 caractères").max(2000),
 });
 
 export function ContactForm() {
@@ -23,9 +24,12 @@ export function ContactForm() {
   const [busy, setBusy] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
 
+  const [waPending, setWaPending] = useState(false);
+
   const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const form = e.currentTarget;
+    const viaWhatsApp = (e.nativeEvent as SubmitEvent).submitter?.getAttribute("value") === "whatsapp";
     const fd = new FormData(form);
     const data = Object.fromEntries(fd.entries());
     const r = schema.safeParse(data);
@@ -36,11 +40,19 @@ export function ContactForm() {
       return;
     }
     setErrors({});
+    if (viaWhatsApp) {
+      window.open(buildWhatsAppUrl(r.data), "_blank", "noopener,noreferrer");
+      setSent(false);
+      setWaPending(true);
+      submitLead({ data: { ...r.data, form_type: "contact_whatsapp" } }).catch(() => {});
+      return;
+    }
     setBusy(true);
     try {
       const res = await submitLead({ data: { ...r.data, form_type: "contact" } });
       if (!res.ok) throw new Error("failed");
       setSent(true);
+      setWaPending(false);
       form.reset();
     } catch {
       toast.error(lang === "fr" ? "L'envoi a échoué. Merci de réessayer." : "Sending failed. Please try again.");
@@ -109,6 +121,16 @@ export function ContactForm() {
               <p className="text-sm font-medium">{t("contact.sent")}</p>
             </div>
           )}
+          {waPending && (
+            <div role="status" className="flex items-start gap-3 p-4 rounded-md bg-accent/10 text-primary border border-accent/20">
+              <MessageCircle size={20} className="shrink-0 mt-0.5 text-accent" />
+              <p className="text-sm">
+                {lang === "fr"
+                  ? "Votre message WhatsApp a été préparé. Pour finaliser votre demande, appuyez sur « Envoyer » dans WhatsApp. Si WhatsApp ne s'est pas ouvert, cliquez à nouveau sur le bouton."
+                  : "Your WhatsApp message has been prepared. To complete your request, press Send in WhatsApp. If WhatsApp did not open, click the button again."}
+              </p>
+            </div>
+          )}
           <div className="grid gap-4 sm:grid-cols-2">
             <FormRow label={t("contact.name")} error={errors.name}>
               <input name="name" required className={field} autoComplete="name" />
@@ -129,9 +151,14 @@ export function ContactForm() {
           <FormRow label={t("contact.message")} error={errors.message}>
             <textarea name="message" required rows={5} className={field} />
           </FormRow>
-          <button type="submit" disabled={busy} className="btn-accent w-full sm:w-auto disabled:opacity-60">
-            {t("contact.send")} <Send size={16} />
-          </button>
+          <div className="flex flex-col sm:flex-row gap-3">
+            <button type="submit" value="whatsapp" className="btn-accent w-full sm:w-auto min-h-11">
+              <MessageCircle size={18} aria-hidden="true" /> Confirmer via WhatsApp
+            </button>
+            <button type="submit" value="email" disabled={busy} className="w-full sm:w-auto min-h-11 inline-flex items-center justify-center gap-2 rounded-md border border-primary px-5 py-2.5 text-sm font-semibold text-primary hover:bg-secondary transition-colors disabled:opacity-60">
+              {t("contact.send")} <Send size={16} />
+            </button>
+          </div>
         </form>
       </div>
     </section>
