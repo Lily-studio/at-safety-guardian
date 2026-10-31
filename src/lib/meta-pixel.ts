@@ -58,7 +58,14 @@ export function loadMetaPixelBase(): void {
   }
   if (!scriptLoaded) {
     scriptLoaded = true;
-    dispatch(["consent", "revoke"]);
+    // Returning visitors who already accepted start granted. Queuing
+    // revoke -> init -> grant before fbevents.js loads silently breaks the pixel.
+    if (hasAdsConsent()) {
+      granted = true;
+      dispatch(["consent", "grant"]);
+    } else {
+      dispatch(["consent", "revoke"]);
+    }
     dispatch(["init", META_PIXEL_ID, {}, { agent: "lovable" }]);
     const s = document.createElement("script");
     s.async = true;
