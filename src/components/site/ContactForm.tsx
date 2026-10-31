@@ -5,6 +5,9 @@ import { buildWhatsAppUrl } from "@/lib/whatsapp";
 import { useI18n } from "@/lib/i18n";
 import { pick, useCompany, useSection } from "@/lib/cms";
 import { submitLead } from "@/lib/cms.functions";
+import { trackContact, trackLead } from "@/lib/meta-pixel";
+import { PhoneContact } from "@/components/site/PhoneContact";
+import { SocialLinks } from "@/components/site/SocialLinks";
 import { toast } from "sonner";
 
 const schema = z.object({
@@ -42,6 +45,7 @@ export function ContactForm() {
     setErrors({});
     if (viaWhatsApp) {
       window.open(buildWhatsAppUrl(r.data), "_blank", "noopener,noreferrer");
+      trackContact();
       setSent(false);
       setWaPending(true);
       submitLead({ data: { ...r.data, form_type: "contact_whatsapp" } }).catch(() => {});
@@ -51,6 +55,7 @@ export function ContactForm() {
     try {
       const res = await submitLead({ data: { ...r.data, form_type: "contact" } });
       if (!res.ok) throw new Error("failed");
+      trackLead();
       setSent(true);
       setWaPending(false);
       form.reset();
@@ -65,10 +70,10 @@ export function ContactForm() {
   const locationVal = pick(lang, company.location_fr, company.location_en) || t("contact.info.locationVal");
 
   const infos = [
-    company.phone ? { icon: Phone, label: t("contact.info.phone"), value: company.phone } : null,
-    company.email ? { icon: Mail, label: t("contact.info.email"), value: company.email } : null,
-    { icon: MapPin, label: t("contact.info.location"), value: company.address || locationVal },
-  ].filter(Boolean) as Array<{ icon: typeof Phone; label: string; value: string }>;
+    company.phone ? { icon: Phone, label: t("contact.info.phone"), value: company.phone, isPhone: true } : null,
+    company.email ? { icon: Mail, label: t("contact.info.email"), value: company.email, isPhone: false } : null,
+    { icon: MapPin, label: t("contact.info.location"), value: company.address || locationVal, isPhone: false },
+  ].filter(Boolean) as Array<{ icon: typeof Phone; label: string; value: string; isPhone: boolean }>;
 
   return (
     <section id="contact" className="section-y bg-surface">
@@ -95,12 +100,20 @@ export function ContactForm() {
                   </div>
                   <div>
                     <p className="text-xs uppercase font-semibold text-muted-foreground tracking-wide">{it.label}</p>
-                    <p className="text-primary font-medium mt-0.5 break-words">{it.value}</p>
+                    {it.isPhone ? (
+                      <PhoneContact phone={it.value} className="text-primary font-medium mt-0.5 break-words hover:text-accent transition-colors" />
+                    ) : (
+                      <p className="text-primary font-medium mt-0.5 break-words">{it.value}</p>
+                    )}
                   </div>
                 </li>
               );
             })}
           </ul>
+          <div>
+            <p className="text-xs uppercase font-semibold text-muted-foreground tracking-wide mb-3">{t("contact.follow")}</p>
+            <SocialLinks />
+          </div>
           {company.map_embed && (
             <div className="rounded-lg overflow-hidden border border-border h-56">
               <iframe

@@ -1,9 +1,9 @@
 import { Link } from "@tanstack/react-router";
-import { Menu, X } from "lucide-react";
+import { Facebook, Instagram, Menu, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import logoAsset from "@/assets/logo.png.asset.json";
 import { useI18n, type Lang } from "@/lib/i18n";
-import { pick, useNav, useSettings } from "@/lib/cms";
+import { pick, useCompany, useNav, useSettings } from "@/lib/cms";
 
 export function Header() {
   const { t, lang, setLang } = useI18n();
@@ -11,6 +11,11 @@ export function Header() {
   const [open, setOpen] = useState(false);
   const branding = useSettings("branding");
   const logoUrl = (branding.logo_url as string) || logoAsset.url;
+  const company = useCompany();
+  const socials = [
+    { key: "facebook", href: company.facebook, icon: Facebook, label: "Facebook — AT SAFETY PRIVE" },
+    { key: "instagram", href: company.instagram, icon: Instagram, label: "Instagram — @atsafety.prive" },
+  ].filter((s) => s.href && s.href.startsWith("http"));
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 12);
@@ -63,6 +68,22 @@ export function Header() {
         </nav>
 
         <div className="flex items-center gap-3">
+          {socials.length > 0 && (
+            <div className="hidden xl:flex items-center gap-1">
+              {socials.map((s) => (
+                <a
+                  key={s.key}
+                  href={s.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={s.label}
+                  className="p-2 rounded-md text-primary/70 hover:text-accent hover:bg-secondary transition-colors"
+                >
+                  <s.icon size={17} aria-hidden="true" />
+                </a>
+              ))}
+            </div>
+          )}
           <div className="hidden sm:flex items-center rounded-md border border-border overflow-hidden text-xs font-semibold">
             {(["fr", "en"] as Lang[]).map((l) => (
               <button
