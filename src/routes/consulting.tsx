@@ -1,9 +1,11 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useEffect } from "react";
 import { buildHead, loadSeo } from "@/lib/seo";
 import { ConsultingSection } from "@/components/site/ConsultingSection";
 import { IndustriesSection } from "@/components/site/IndustriesSection";
 import { CTASection } from "@/components/site/CTASection";
 import { PageHero } from "@/components/site/PageHero";
+import { trackViewContent } from "@/lib/meta-pixel";
 
 export const Route = createFileRoute("/consulting")({
   loader: ({ context }) => loadSeo(context.queryClient, "/consulting"),
@@ -16,6 +18,9 @@ export const Route = createFileRoute("/consulting")({
 });
 
 function ConsultingPage() {
+  useEffect(() => {
+    trackViewContent("Conseil & Audits HSE");
+  }, []);
   return (
     <>
       <PageHero page="consulting" titleKey="consulting.title" subtitleKey="consulting.subtitle" eyebrow="04" />

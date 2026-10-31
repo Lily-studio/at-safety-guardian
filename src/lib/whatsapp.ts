@@ -1,5 +1,8 @@
 export const COMPANY_WHATSAPP = "212666249070";
 
+export const WHATSAPP_GREETING =
+  "Bonjour AT SAFETY PRIVE, je souhaite obtenir des informations sur vos services.";
+
 export type WhatsAppInquiry = {
   name: string;
   company?: string;

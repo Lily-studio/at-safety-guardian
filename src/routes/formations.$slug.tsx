@@ -1,10 +1,12 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
+import { useEffect } from "react";
 import {
   ArrowLeft, Award, BookOpen, CheckCircle2, ClipboardCheck, Clock, Download, GraduationCap, Target, Users,
 } from "lucide-react";
 import { getFormation } from "@/lib/cms.functions";
 import { asArray } from "@/lib/cms";
 import { SITE_URL } from "@/lib/seo";
+import { trackViewContent } from "@/lib/meta-pixel";
 
 export const Route = createFileRoute("/formations/$slug")({
   loader: async ({ params }) => {
@@ -86,6 +88,10 @@ function TrainingDetail() {
   const { formation: f } = Route.useLoaderData();
   const programme = asArray<string>(f.programme);
   const extras = asArray<ExtraSection>(f.extra_sections);
+
+  useEffect(() => {
+    trackViewContent(f.title_fr);
+  }, [f.title_fr]);
 
   return (
     <>
