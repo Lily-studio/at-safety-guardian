@@ -61,6 +61,16 @@ describe("meta-pixel consent gating", () => {
     expect(fbq.queue.filter((a) => a[0] === "init")).toHaveLength(1);
   });
 
+  it("never queues revoke for a returning visitor who already accepted", async () => {
+    store.set("cookie-consent", "accepted");
+    const mp = await loadModule();
+    mp.initMetaPixel();
+    const fbq = (window as { fbq: { queue: unknown[][] } }).fbq;
+    expect(fbq.queue[0]).toEqual(["consent", "grant"]);
+    expect(fbq.queue).not.toContainEqual(["consent", "revoke"]);
+    expect(fbq.queue.filter((a) => a[0] === "consent")).toHaveLength(1);
+  });
+
   it("sends events only after consent", async () => {
     store.set("cookie-consent", "accepted");
     const mp = await loadModule();
