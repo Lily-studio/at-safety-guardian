@@ -11,6 +11,6 @@
 
 ## Architecture rules
 
-- Meta Pixel lives in `src/lib/meta-pixel.ts` and must only load after explicit cookie consent (`localStorage "cookie-consent" === "accepted"`); all event helpers re-check consent before sending, and no form/personal data is ever sent to Meta. Why: consent-first tracking is a hard business requirement.
+- Meta Pixel lives in `src/lib/meta-pixel.ts` and uses Meta Consent Mode: base code loads with `fbq("consent","revoke")` by default and is granted only after explicit cookie consent (`localStorage "cookie-consent" === "accepted"`); all event helpers re-check consent, and no form/personal data is ever sent to Meta. Why: pixel must be detectable by Meta while tracking stays consent-first.
 - Social links render only when the configured URL starts with `http` (see `SocialLinks`); placeholders like `#` must never be rendered as links. Why: the site must never show broken or invented social URLs.
 - All WhatsApp entry points use `COMPANY_WHATSAPP` from `src/lib/whatsapp.ts`; the floating button and phone popover use `WHATSAPP_GREETING`. Why: one official number everywhere.
