@@ -37,9 +37,14 @@ function dispatch(args: unknown[]) {
   else fbq.queue.push(args);
 }
 
-/** Loads the base code exactly once and initializes the pixel. Returns false when consent is missing. */
-export function initMetaPixel(): boolean {
-  if (typeof window === "undefined" || !hasAdsConsent()) return false;
+let granted = false;
+
+/**
+ * Meta Consent Mode: loads the base code once with consent REVOKED by default,
+ * so Meta's tools can detect the pixel, but no hits are sent until the visitor accepts.
+ */
+export function loadMetaPixelBase(): void {
+  if (typeof window === "undefined") return;
   if (!window.fbq) {
     const n = function (...args: unknown[]) {
       if (n.callMethod) n.callMethod.apply(n, args);
@@ -53,20 +58,32 @@ export function initMetaPixel(): boolean {
   }
   if (!scriptLoaded) {
     scriptLoaded = true;
+    dispatch(["consent", "revoke"]);
+    dispatch(["init", META_PIXEL_ID, {}, { agent: "lovable" }]);
     const s = document.createElement("script");
     s.async = true;
     s.src = "https://connect.facebook.net/en_US/fbevents.js";
     const first = document.getElementsByTagName("script")[0];
     if (first?.parentNode) first.parentNode.insertBefore(s, first);
     else document.head.appendChild(s);
+  }
+}
+
+/** Grants consent when the visitor accepted. Returns false when consent is missing. */
+export function initMetaPixel(): boolean {
+  if (typeof window === "undefined") return false;
+  loadMetaPixelBase();
+  if (!hasAdsConsent()) return false;
+  if (!granted) {
+    granted = true;
     dispatch(["consent", "grant"]);
-    dispatch(["init", META_PIXEL_ID, {}, { agent: "lovable" }]);
   }
   return true;
 }
 
 /** Stops pixel hits when the visitor withdraws consent. */
 export function revokeMetaPixelConsent() {
+  granted = false;
   if (typeof window === "undefined" || !window.fbq) return;
   dispatch(["consent", "revoke"]);
 }

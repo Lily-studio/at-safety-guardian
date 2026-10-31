@@ -31,11 +31,13 @@ beforeEach(() => {
 });
 
 describe("meta-pixel consent gating", () => {
-  it("does not load the pixel without consent", async () => {
+  it("loads the base code with consent revoked when not accepted", async () => {
     const mp = await loadModule();
     expect(mp.initMetaPixel()).toBe(false);
-    expect((window as { fbq?: unknown }).fbq).toBeUndefined();
-    expect(insertedScripts).toHaveLength(0);
+    const fbq = (window as { fbq: { queue: unknown[][] } }).fbq;
+    expect(fbq.queue[0]).toEqual(["consent", "revoke"]);
+    expect(fbq.queue).not.toContainEqual(["consent", "grant"]);
+    expect(insertedScripts).toHaveLength(1);
   });
 
   it("does not send events without consent", async () => {
@@ -43,8 +45,8 @@ describe("meta-pixel consent gating", () => {
     mp.trackLead();
     mp.trackContact();
     mp.trackPageView();
-    expect((window as { fbq?: unknown }).fbq).toBeUndefined();
-    expect(insertedScripts).toHaveLength(0);
+    const q = (window as { fbq?: { queue: unknown[][] } }).fbq?.queue ?? [];
+    expect(q.filter((a) => a[0] === "track")).toHaveLength(0);
   });
 
   it("initializes once with the lovable agent after consent", async () => {

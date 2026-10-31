@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 import { useRouterState } from "@tanstack/react-router";
-import { hasAdsConsent, initMetaPixel, trackPageView } from "@/lib/meta-pixel";
+import { hasAdsConsent, initMetaPixel, loadMetaPixelBase, trackPageView } from "@/lib/meta-pixel";
 
 /**
  * Fires one PageView per visited path (including client-side navigation),
@@ -11,6 +11,7 @@ export function MetaPixelTracker() {
   const lastPath = useRef<string | null>(null);
 
   useEffect(() => {
+    loadMetaPixelBase();
     if (!hasAdsConsent()) {
       lastPath.current = null;
       return;
