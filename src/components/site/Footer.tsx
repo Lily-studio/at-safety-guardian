@@ -1,8 +1,10 @@
 import { Link } from "@tanstack/react-router";
-import { Facebook, Instagram, Linkedin, Mail, MapPin, Phone } from "lucide-react";
+import { Mail, MapPin, Phone } from "lucide-react";
 import logoAsset from "@/assets/logo.png.asset.json";
 import { useI18n } from "@/lib/i18n";
 import { pick, useCompany, useNav, useSettings, useSiteContent } from "@/lib/cms";
+import { SocialLinks } from "@/components/site/SocialLinks";
+import { PhoneContact } from "@/components/site/PhoneContact";
 
 export function Footer() {
   const { t, lang } = useI18n();
@@ -25,22 +27,8 @@ export function Footer() {
         <div>
           <img src={logoUrl} alt={company.name || "AT Safety Prive"} className="h-14 w-auto bg-white rounded-md p-1" width={512} height={512} />
           <p className="mt-4 text-sm text-white/70 leading-relaxed">{tagline}</p>
-          <div className="flex gap-3 mt-5">
-            {company.linkedin && (
-              <a href={company.linkedin} aria-label="LinkedIn" className="p-2 rounded-md bg-white/10 hover:bg-accent transition-colors">
-                <Linkedin size={18} />
-              </a>
-            )}
-            {company.facebook && (
-              <a href={company.facebook} aria-label="Facebook" className="p-2 rounded-md bg-white/10 hover:bg-accent transition-colors">
-                <Facebook size={18} />
-              </a>
-            )}
-            {company.instagram && (
-              <a href={company.instagram} aria-label="Instagram" className="p-2 rounded-md bg-white/10 hover:bg-accent transition-colors">
-                <Instagram size={18} />
-              </a>
-            )}
+          <div className="mt-5">
+            <SocialLinks dark />
           </div>
         </div>
 
@@ -83,7 +71,7 @@ export function Footer() {
             {company.phone && (
               <li className="flex items-start gap-2">
                 <Phone size={16} className="mt-0.5 shrink-0 text-accent" />
-                <a href={`tel:${company.phone.replace(/\s/g, "")}`} className="hover:text-accent">{company.phone}</a>
+                <PhoneContact phone={company.phone} className="hover:text-accent transition-colors" />
               </li>
             )}
             {company.email && (

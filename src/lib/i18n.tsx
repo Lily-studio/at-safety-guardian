@@ -109,6 +109,11 @@ const dict: Record<Lang, Dict> = {
       "Nous utilisons des cookies pour améliorer votre expérience. En poursuivant votre navigation, vous acceptez notre politique.",
     "cookie.accept": "J'accepte",
     "cookie.decline": "Refuser",
+
+    "phone.call": "Appeler",
+    "phone.whatsapp": "Nous contacter sur WhatsApp",
+    "contact.follow": "Suivez-nous",
+    "wa.aria": "Discuter avec AT SAFETY PRIVE sur WhatsApp",
   },
   en: {
     "nav.home": "Home",
@@ -214,6 +219,11 @@ const dict: Record<Lang, Dict> = {
       "We use cookies to improve your experience. By continuing you accept our policy.",
     "cookie.accept": "Accept",
     "cookie.decline": "Decline",
+
+    "phone.call": "Call us",
+    "phone.whatsapp": "Contact us on WhatsApp",
+    "contact.follow": "Follow us",
+    "wa.aria": "Chat with AT SAFETY PRIVE on WhatsApp",
   },
 };
 

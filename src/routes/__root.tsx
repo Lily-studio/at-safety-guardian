@@ -17,6 +17,8 @@ import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
 import { CookieBanner } from "@/components/site/CookieBanner";
 import { StickyMobileCTA } from "@/components/site/StickyMobileCTA";
+import { FloatingWhatsApp } from "@/components/site/FloatingWhatsApp";
+import { MetaPixelTracker } from "@/components/site/MetaPixelTracker";
 import { Toaster } from "sonner";
 
 function NotFoundComponent() {
@@ -163,6 +165,8 @@ function RootComponent() {
             <Footer />
             <CookieBanner />
             <StickyMobileCTA />
+            <FloatingWhatsApp />
+            <MetaPixelTracker />
           </>
         )}
         <Toaster position="top-right" />

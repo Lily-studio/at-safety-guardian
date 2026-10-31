@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useI18n } from "@/lib/i18n";
+import { initMetaPixel, revokeMetaPixelConsent, trackPageView } from "@/lib/meta-pixel";
 
 export function CookieBanner() {
   const { t } = useI18n();
@@ -12,6 +13,11 @@ export function CookieBanner() {
   const decide = (v: string) => {
     localStorage.setItem("cookie-consent", v);
     setShow(false);
+    if (v === "accepted") {
+      if (initMetaPixel()) trackPageView();
+    } else {
+      revokeMetaPixelConsent();
+    }
   };
   return (
     <div className="fixed bottom-4 inset-x-4 md:inset-x-auto md:right-6 md:left-auto md:max-w-md z-40 rounded-lg bg-white border border-border shadow-2xl p-4 fade-up">

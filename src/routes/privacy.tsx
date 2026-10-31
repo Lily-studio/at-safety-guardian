@@ -26,7 +26,9 @@ function PrivacyPage() {
           <p className="mt-2 text-foreground/80">Vos données sont utilisées exclusivement pour vous recontacter, établir des devis et vous fournir nos services. Elles ne sont jamais vendues à des tiers.</p>
           <h2 className="text-2xl font-bold text-primary mt-8">3. Cookies</h2>
           <p className="mt-2 text-foreground/80">Notre site utilise des cookies essentiels au fonctionnement et à la mémorisation de vos préférences (langue, consentement).</p>
-          <h2 className="text-2xl font-bold text-primary mt-8">4. Vos droits</h2>
+          <h2 className="text-2xl font-bold text-primary mt-8">4. Mesure d'audience et publicité (Meta Pixel)</h2>
+          <p className="mt-2 text-foreground/80">Avec votre consentement explicite via notre bandeau cookies, nous utilisons le Meta Pixel (Meta Platforms, Inc.) pour mesurer l'audience de notre site et l'efficacité de nos campagnes publicitaires Facebook et Instagram. Les données transmises concernent uniquement votre navigation (pages consultées, actions comme une demande de contact) — aucune donnée personnelle saisie dans nos formulaires n'est envoyée à Meta. Vous pouvez retirer votre consentement à tout moment en refusant les cookies via le bandeau ou en supprimant les données du site dans votre navigateur ; le pixel est alors désactivé.</p>
+          <h2 className="text-2xl font-bold text-primary mt-8">5. Vos droits</h2>
           <p className="mt-2 text-foreground/80">Conformément à la loi 09-08, vous disposez d'un droit d'accès, de rectification et de suppression de vos données. Contactez-nous à contact@atsafetyprive.ma.</p>
         </div>
       </section>
