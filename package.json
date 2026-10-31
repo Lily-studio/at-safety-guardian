@@ -9,7 +9,7 @@
     "build:dev": "vite build --mode development",
     "preview": "vite preview",
     "cf:preview": "vite build && wrangler dev",
-    "cf:deploy": "vite build && wrangler deploy",
+    "cf:deploy": "vite build && wrangler deploy --name at-safety-guardian",
     "lint": "eslint .",
     "format": "prettier --write ."
   },
