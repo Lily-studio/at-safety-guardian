@@ -1,3 +1,5 @@
+import { enquirySchema } from "./enquiry-schema";
+
 export const COMPANY_WHATSAPP = "212666249070";
 
 export const WHATSAPP_GREETING =
@@ -13,6 +15,7 @@ export type WhatsAppInquiry = {
 };
 
 export function buildWhatsAppMessage(d: WhatsAppInquiry): string {
+  d = enquirySchema.parse(d);
   return [
     "Bonjour AT SAFETY PRIVE,",
     "",

@@ -2,6 +2,7 @@ import { createServerFn } from "@tanstack/react-start";
 import { createClient } from "@supabase/supabase-js";
 import type { Database, Json, Tables } from "@/integrations/supabase/types";
 import { supabasePublishableKey, supabaseUrl } from "./runtime-env";
+import { leadSchema } from "./enquiry-schema";
 
 function isNewSupabaseApiKey(value: string): boolean {
   return value.startsWith("sb_publishable_") || value.startsWith("sb_secret_");
@@ -161,22 +162,7 @@ export const getPublicFormationSlugs = createServerFn({ method: "GET" }).handler
 );
 
 export const submitLead = createServerFn({ method: "POST" })
-  .inputValidator((data: Record<string, unknown>) => {
-    const str = (v: unknown, max: number) => String(v ?? "").trim().slice(0, max);
-    const name = str(data.name, 100);
-    const email = str(data.email, 255);
-    if (name.length < 2) throw new Error("invalid_name");
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) throw new Error("invalid_email");
-    return {
-      name,
-      email,
-      company: str(data.company, 120),
-      phone: str(data.phone, 30),
-      subject: str(data.subject, 150),
-      message: str(data.message, 2000),
-      form_type: str(data.form_type, 40) || "contact",
-    };
-  })
+  .inputValidator((data: Record<string, unknown>) => leadSchema.parse(data))
   .handler(async ({ data }) => {
     try {
       const sb = publicClient();
