@@ -1,5 +1,4 @@
 import { useState, type FormEvent } from "react";
-import { z } from "zod";
 import { Mail, MapPin, MessageCircle, Phone, Send, CheckCircle2 } from "lucide-react";
 import { buildWhatsAppUrl } from "@/lib/whatsapp";
 import { useI18n } from "@/lib/i18n";
@@ -9,15 +8,9 @@ import { trackContact, trackLead } from "@/lib/meta-pixel";
 import { PhoneContact } from "@/components/site/PhoneContact";
 import { SocialLinks } from "@/components/site/SocialLinks";
 import { toast } from "sonner";
-
-const schema = z.object({
-  name: z.string().trim().min(2, "Veuillez indiquer votre nom (2 caractères min.)").max(100),
-  company: z.string().trim().max(120).optional().or(z.literal("")),
-  phone: z.string().trim().regex(/^\+?[0-9\s().-]{6,30}$/, "Numéro de téléphone invalide"),
-  email: z.string().trim().email("Adresse e-mail invalide").max(255),
-  subject: z.string().trim().min(2, "Veuillez préciser le service ou la formation souhaité(e)").max(150),
-  message: z.string().trim().min(10, "Votre message doit contenir au moins 10 caractères").max(2000),
-});
+import { enquirySchema } from "@/lib/enquiry-schema";
+import { openWhatsApp } from "@/lib/whatsapp-open";
+import { Button } from "@/components/ui/button";
 
 export function ContactForm() {
   const { t, lang } = useI18n();
@@ -28,32 +21,55 @@ export function ContactForm() {
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   const [waPending, setWaPending] = useState(false);
+  const [waUrl, setWaUrl] = useState("");
+  const [waError, setWaError] = useState("");
+  const [saveError, setSaveError] = useState("");
 
-  const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const form = e.currentTarget;
-    const viaWhatsApp = (e.nativeEvent as SubmitEvent).submitter?.getAttribute("value") === "whatsapp";
+  const validate = (form: HTMLFormElement) => {
     const fd = new FormData(form);
     const data = Object.fromEntries(fd.entries());
-    const r = schema.safeParse(data);
+    const r = enquirySchema.safeParse(data);
     if (!r.success) {
       const errs: Record<string, string> = {};
       r.error.issues.forEach((i) => { errs[i.path[0] as string] = i.message; });
       setErrors(errs);
-      return;
+      const first = form.elements.namedItem(r.error.issues[0]?.path[0] as string);
+      if (first instanceof HTMLElement) first.focus();
+      return null;
     }
     setErrors({});
-    if (viaWhatsApp) {
-      window.open(buildWhatsAppUrl(r.data), "_blank", "noopener,noreferrer");
-      trackContact();
-      setSent(false);
-      setWaPending(true);
-      submitLead({ data: { ...r.data, form_type: "contact_whatsapp" } }).catch(() => {});
-      return;
-    }
+    return r.data;
+  };
+
+  const confirmWhatsApp = (form: HTMLFormElement | null) => {
+    if (!form) return;
+    setSent(false);
+    setWaPending(false);
+    setWaError("");
+    setWaUrl("");
+    setSaveError("");
+    const data = validate(form);
+    if (!data) return;
+    const url = buildWhatsAppUrl(data);
+    setWaUrl(url);
+    const opened = openWhatsApp(url);
+    setWaPending(opened);
+    if (opened) trackContact();
+    else setWaError("WhatsApp n’a pas pu être ouvert. Autorisez l’ouverture d’un nouvel onglet ou utilisez le lien ci-dessous.");
+    // Never delay the opening while saving, and never hide a failed save.
+    void submitLead({ data: { ...data, form_type: "contact_whatsapp" } })
+      .then((res) => { if (!res.ok) setSaveError("Votre demande n’a pas pu être enregistrée sur le site. Vous pouvez toujours l’envoyer dans WhatsApp."); })
+      .catch(() => setSaveError("Votre demande n’a pas pu être enregistrée sur le site. Vous pouvez toujours l’envoyer dans WhatsApp."));
+  };
+
+  const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const form = e.currentTarget;
+    const data = validate(form);
+    if (!data) return;
     setBusy(true);
     try {
-      const res = await submitLead({ data: { ...r.data, form_type: "contact" } });
+      const res = await submitLead({ data: { ...data, form_type: "contact" } });
       if (!res.ok) throw new Error("failed");
       trackLead();
       setSent(true);
@@ -127,7 +143,7 @@ export function ContactForm() {
           )}
         </div>
 
-        <form onSubmit={onSubmit} className="lg:col-span-3 bg-white rounded-2xl p-6 md:p-8 border border-border shadow-[var(--shadow-card)] space-y-4">
+        <form noValidate onSubmit={onSubmit} className="lg:col-span-3 bg-white rounded-2xl p-6 md:p-8 border border-border shadow-[var(--shadow-card)] space-y-4">
           {sent && (
             <div className="flex items-start gap-3 p-4 rounded-md bg-accent/10 text-accent border border-accent/20">
               <CheckCircle2 size={20} className="shrink-0 mt-0.5" />
@@ -144,33 +160,40 @@ export function ContactForm() {
               </p>
             </div>
           )}
+          {waError && <p role="alert" className="text-sm text-destructive">{waError}</p>}
+          {waUrl && (
+            <a href={waUrl} target="_blank" rel="noopener noreferrer" onClick={() => trackContact()} className="inline-flex min-h-11 items-center text-sm font-semibold text-accent underline">
+              Ouvrir le message dans WhatsApp
+            </a>
+          )}
+          {saveError && <p role="alert" className="text-sm text-destructive">{saveError}</p>}
           <div className="grid gap-4 sm:grid-cols-2">
             <FormRow label={t("contact.name")} error={errors.name}>
-              <input name="name" required className={field} autoComplete="name" />
+              <input name="name" required minLength={2} maxLength={100} aria-invalid={Boolean(errors.name)} className={field} autoComplete="name" />
             </FormRow>
             <FormRow label={t("contact.company")}>
-              <input name="company" className={field} autoComplete="organization" />
+              <input name="company" maxLength={120} className={field} autoComplete="organization" />
             </FormRow>
             <FormRow label={t("contact.phone")} error={errors.phone}>
-              <input name="phone" required type="tel" className={field} autoComplete="tel" />
+              <input name="phone" required maxLength={30} aria-invalid={Boolean(errors.phone)} type="tel" className={field} autoComplete="tel" />
             </FormRow>
             <FormRow label={t("contact.email")} error={errors.email}>
-              <input name="email" required type="email" className={field} autoComplete="email" />
+              <input name="email" required maxLength={255} aria-invalid={Boolean(errors.email)} type="email" className={field} autoComplete="email" />
             </FormRow>
           </div>
           <FormRow label={t("contact.subject")} error={errors.subject}>
-            <input name="subject" required className={field} />
+            <input name="subject" required minLength={2} maxLength={150} aria-invalid={Boolean(errors.subject)} className={field} />
           </FormRow>
           <FormRow label={t("contact.message")} error={errors.message}>
-            <textarea name="message" required rows={5} className={field} />
+            <textarea name="message" required minLength={10} maxLength={2000} aria-invalid={Boolean(errors.message)} rows={5} className={field} />
           </FormRow>
           <div className="flex flex-col sm:flex-row gap-3">
-            <button type="submit" value="whatsapp" className="btn-accent w-full sm:w-auto min-h-11">
+            <Button type="button" value="whatsapp" variant="ghost" onClick={(e) => confirmWhatsApp(e.currentTarget.form)} className="btn-accent w-full sm:w-auto min-h-11">
               <MessageCircle size={18} aria-hidden="true" /> Confirmer via WhatsApp
-            </button>
-            <button type="submit" value="email" disabled={busy} className="w-full sm:w-auto min-h-11 inline-flex items-center justify-center gap-2 rounded-md border border-primary px-5 py-2.5 text-sm font-semibold text-primary hover:bg-secondary transition-colors disabled:opacity-60">
+            </Button>
+            <Button type="submit" value="email" variant="ghost" disabled={busy} className="w-full sm:w-auto min-h-11 inline-flex items-center justify-center gap-2 rounded-md border border-primary px-5 py-2.5 text-sm font-semibold text-primary hover:bg-secondary transition-colors disabled:opacity-60">
               {t("contact.send")} <Send size={16} />
-            </button>
+            </Button>
           </div>
         </form>
       </div>
